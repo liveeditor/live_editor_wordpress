@@ -1,5 +1,4 @@
 <?php
-
 /*
 Plugin Name: Live Editor File Manager
 Plugin URI: http://www.liveeditorcms.com/wordpress
@@ -25,3 +24,46 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
+/**
+ * Loads the `LiveEditorFileManager` plugin.
+ */
+if (!class_exists('LiveEditorFileManagerPlugin')) {
+  class LiveEditorFileManagerPlugin {
+    const VERSION     = "0.1";
+    const MINIMUM_WP  = "3.5";
+    const OPTIONS_KEY = "live_editor_file_manager_plugin_options"; // Used as key in WP options table
+
+    /**
+     * Constructor.
+     */
+    function LiveEditorFileManagerPlugin() {
+      // Activation
+      register_activation_hook(__FILE__, array(&$this, "activate"));
+    }
+
+    function uninstall() {
+      delete_option(self::OPTIONS_KEY);
+    }
+
+    /**
+     * Configures plugin option defaults if not yet set.
+     */
+    function activate() {
+      $options = get_option(self::OPTIONS_KEY);
+
+      // Initialize option defaults
+      if (!$options) {
+        $options["version"] = self::VERSION;
+        $options["api_key"] = null;
+
+        add_option(self::OPTIONS_KEY, $options);
+      }
+    }
+  }
+
+  // Instantiate the plugin
+  global $live_editor_file_manager_plugin;
+  $live_editor_file_manager_plugin = new LiveEditorFileManagerPlugin();
+}
+
+?>
