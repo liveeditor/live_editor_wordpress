@@ -36,13 +36,14 @@ if (!class_exists('LiveEditorFileManagerPlugin')) {
     /**
      * Constructor.
      */
-    function LiveEditorFileManagerPlugin() {
+    function __construct() {
       // Activation
       register_activation_hook(__FILE__, array(&$this, "activate"));
-    }
 
-    function uninstall() {
-      delete_option(self::OPTIONS_KEY);
+      // Actions
+      add_action("admin_menu", array(&$this, "hide_media_tab")); // Hide Media tab if the settings call for it
+      add_action("admin_init", array(&$this, "admin_init"));     // Initialize settings that are configurable through admin
+      add_action("admin_menu", array(&$this, "settings_menu"));  // Add settings menu to WP menu
     }
 
     /**
@@ -54,10 +55,147 @@ if (!class_exists('LiveEditorFileManagerPlugin')) {
       // Initialize option defaults
       if (!$options) {
         $options["version"] = self::VERSION;
-        $options["api_key"] = null;
+        $options["hide_media_tab"] = false;
 
         add_option(self::OPTIONS_KEY, $options);
       }
+    }
+
+    /**
+     * Initializes option validation and saving.
+     */
+    function admin_init() {
+      // Handles post data and validation
+      register_setting("live_editor_file_manager_settings", self::OPTIONS_KEY, array(&$this, "validate_settings"));
+
+      // Main settings section within the group
+      add_settings_section(
+        "live_editor_file_manager_main_settings_section",
+        "Main Settings",
+        array(&$this, "settings_section_callback"),
+        "live_editor_file_manager_settings_section"
+      );
+
+      // Each setting field editable through the interface
+      add_settings_field(
+        "hide_media_tab",
+        "Hide WordPress Media Tab",
+        array(&$this, "display_hide_media_tab_check_box"),
+        "live_editor_file_manager_settings_section",
+        "live_editor_file_manager_main_settings_section",
+        array("name" => "hide_media_tab")
+      );
+    }
+
+    /**
+     * Displays settings page for Live Editor File Manager.
+     */
+    function config_page() {
+    ?>
+      <div id="live-editor-file-manager-general" class="wrap">
+        <h2>Live Editor File Manager Settings</h2>
+        <p>
+          Settings for <a href="http://www.liveeditorcms.com/">Live Editor File Manager</a> integration for your
+          WordPress install.
+        </p>
+        <form name="live_editor_file_manager_settings" action="options.php" method="post">
+          <?php echo settings_fields("live_editor_file_manager_settings"); ?>
+          <?php echo do_settings_sections("live_editor_file_manager_settings_section"); ?>
+          <p>
+            <input type="submit" value="Save Changes" />
+          </p>
+        </form>
+      </div>
+    <?php
+    }
+
+    /**
+     * Displays check box for the "hide media tab" option.
+     */
+    function display_hide_media_tab_check_box($data = array()) {
+      extract($data);
+      $options = get_option(self::OPTIONS_KEY);
+    ?>
+      <input
+        type="checkbox"
+        name="<?php echo self::OPTIONS_KEY; ?>[<?php echo $name; ?>]"
+        <?php if ($options["hide_media_tab"]) { ?>
+          checked="checked"
+        <?php } ?>
+      />
+    <?php
+    }
+
+    /**
+     * Hides Media menu if the setting is in place to do so.
+     */
+    function hide_media_tab() {
+      $options = get_option(self::OPTIONS_KEY);
+
+      if ($options["hide_media_tab"]) {
+        remove_menu_page("upload.php");
+      }
+    }
+
+    /**
+     * Adds Live Editor settings to settings menu.
+     */
+    function settings_menu() {
+      add_options_page(
+        "Live Editor File Manager",
+        "Live Editor",
+        "manage_options",
+        "live-editor-file-manager",
+        array(&$this, "config_page")
+      );
+    }
+
+    /**
+     * Displays text to describe the settings section.
+     */
+    function settings_section_callback() {
+      echo '<p>These settings affect all WordPress users connecting to Live Editor for their digital media.</p>';
+    }
+
+    /**
+     * Uninstall process to be run by uninstaller script.
+     */
+    function uninstall() {
+      delete_option(self::OPTIONS_KEY);
+    }
+
+    /**
+     * Validates option settings posted by admin.
+     */
+    function validate_settings($input) {
+      $valid_settings = $this->valid_settings();
+      $final_settings = get_option(self::OPTIONS_KEY);
+
+      // Whitelist setting options so a malicious user cannot add extra keys to the associative array
+      foreach ($valid_settings as $setting) {
+        $id   = $setting["id"];
+        $type = $setting["type"];
+
+        switch ($type) {
+          case "check_box":
+            $final_settings[$id] = isset($input[$id]) && $input[$id] ? true : false;
+            break;
+          default:
+            $final_settings[$id] = $input[$id];
+            break;
+        }
+      }
+
+      return $final_settings;
+    }
+
+    /**
+     * Returns array of valid settings.
+     */
+    private function valid_settings() {
+      return array(
+        array("id" => "hide_media_tab", "type" => "check_box")
+      );
     }
   }
 
