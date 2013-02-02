@@ -54,7 +54,8 @@ if (!class_exists('LiveEditorFileManagerPlugin')) {
 
       // Initialize option defaults
       if (!$options) {
-        $options["version"] = self::VERSION;
+        $options["version"]        = self::VERSION;
+        $options["admin_api_key"]  = null;
         $options["hide_media_tab"] = false;
 
         add_option(self::OPTIONS_KEY, $options);
@@ -78,6 +79,15 @@ if (!class_exists('LiveEditorFileManagerPlugin')) {
 
       // Each setting field editable through the interface
       add_settings_field(
+        "admin_api_key",
+        "Admin API Key",
+        array(&$this, "display_admin_api_key_text_field"),
+        "live_editor_file_manager_settings_section",
+        "live_editor_file_manager_main_settings_section",
+        array("name" => "admin_api_key")
+      );
+
+      add_settings_field(
         "hide_media_tab",
         "Hide WordPress Media Tab",
         array(&$this, "display_hide_media_tab_check_box"),
@@ -95,12 +105,13 @@ if (!class_exists('LiveEditorFileManagerPlugin')) {
       <div id="live-editor-file-manager-general" class="wrap">
         <h2>Live Editor File Manager Settings</h2>
         <p>
-          Settings for <a href="http://www.liveeditorcms.com/">Live Editor File Manager</a> integration for your
-          WordPress install.
+          Settings for <a href="http://www.liveeditorcms.com/">Live Editor File Manager</a> integration with your
+          WordPress system. For documentation, reference our
+          <a href="http://www.liveeditorcms.com/help/wordpress-plugin">WordPress plugin instructions</a>.
         </p>
         <form name="live_editor_file_manager_settings" action="options.php" method="post">
-          <?php echo settings_fields("live_editor_file_manager_settings"); ?>
-          <?php echo do_settings_sections("live_editor_file_manager_settings_section"); ?>
+          <?php echo settings_fields("live_editor_file_manager_settings") ?>
+          <?php echo do_settings_sections("live_editor_file_manager_settings_section") ?>
           <p>
             <input type="submit" value="Save Changes" />
           </p>
@@ -110,7 +121,22 @@ if (!class_exists('LiveEditorFileManagerPlugin')) {
     }
 
     /**
-     * Displays check box for the "hide media tab" option.
+     * Displays text field for "admin API key" setting.
+     */
+    function display_admin_api_key_text_field($data = array()) {
+      extract($data);
+      $options = get_option(self::OPTIONS_KEY);
+    ?>
+      <input
+        type="text"
+        name="<?php echo self::OPTIONS_KEY ?>[<?php echo $name ?>]"
+        value="<?php echo $options['admin_api_key'] ?>"
+      />
+    <?php
+    }
+
+    /**
+     * Displays check box for the "hide media tab" setting.
      */
     function display_hide_media_tab_check_box($data = array()) {
       extract($data);
@@ -118,7 +144,7 @@ if (!class_exists('LiveEditorFileManagerPlugin')) {
     ?>
       <input
         type="checkbox"
-        name="<?php echo self::OPTIONS_KEY; ?>[<?php echo $name; ?>]"
+        name="<?php echo self::OPTIONS_KEY ?>[<?php echo $name ?>]"
         <?php if ($options["hide_media_tab"]) { ?>
           checked="checked"
         <?php } ?>
@@ -143,7 +169,7 @@ if (!class_exists('LiveEditorFileManagerPlugin')) {
     function settings_menu() {
       add_options_page(
         "Live Editor File Manager",
-        "Live Editor",
+        "File Manager",
         "manage_options",
         "live-editor-file-manager",
         array(&$this, "config_page")
@@ -194,6 +220,7 @@ if (!class_exists('LiveEditorFileManagerPlugin')) {
      */
     private function valid_settings() {
       return array(
+        array("id" => "admin_api_key",  "type" => "text"),
         array("id" => "hide_media_tab", "type" => "check_box")
       );
     }
