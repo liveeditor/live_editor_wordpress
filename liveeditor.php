@@ -55,7 +55,8 @@ if (!class_exists('LiveEditorFileManagerPlugin')) {
       // Initialize option defaults
       if (!$options) {
         $options["version"]        = self::VERSION;
-        $options["admin_api_key"]  = null;
+        $options["subdomain_slug"] = null;
+        $options["account_api_key"]  = null;
         $options["hide_media_tab"] = false;
 
         add_option(self::OPTIONS_KEY, $options);
@@ -79,12 +80,21 @@ if (!class_exists('LiveEditorFileManagerPlugin')) {
 
       // Each setting field editable through the interface
       add_settings_field(
-        "admin_api_key",
-        "Admin API Key",
-        array(&$this, "display_admin_api_key_text_field"),
+        "subdomain_slug",
+        "Account Subdomain",
+        array(&$this, "display_subdomain_slug_text_field"),
         "live_editor_file_manager_settings_section",
         "live_editor_file_manager_main_settings_section",
-        array("name" => "admin_api_key")
+        array("name" => "subdomain_slug")
+      );
+
+      add_settings_field(
+        "account_api_key",
+        "Account API Key",
+        array(&$this, "display_account_api_key_text_field"),
+        "live_editor_file_manager_settings_section",
+        "live_editor_file_manager_main_settings_section",
+        array("name" => "account_api_key")
       );
 
       add_settings_field(
@@ -112,8 +122,8 @@ if (!class_exists('LiveEditorFileManagerPlugin')) {
         <form name="live_editor_file_manager_settings" action="options.php" method="post">
           <?php echo settings_fields("live_editor_file_manager_settings") ?>
           <?php echo do_settings_sections("live_editor_file_manager_settings_section") ?>
-          <p>
-            <input type="submit" value="Save Changes" />
+          <p class="submit">
+            <input type="submit" value="Save Changes" class="button button-primary" />
           </p>
         </form>
       </div>
@@ -123,14 +133,15 @@ if (!class_exists('LiveEditorFileManagerPlugin')) {
     /**
      * Displays text field for "admin API key" setting.
      */
-    function display_admin_api_key_text_field($data = array()) {
+    function display_account_api_key_text_field($data = array()) {
       extract($data);
       $options = get_option(self::OPTIONS_KEY);
     ?>
       <input
         type="text"
         name="<?php echo self::OPTIONS_KEY ?>[<?php echo $name ?>]"
-        value="<?php echo $options['admin_api_key'] ?>"
+        value="<?php echo $options['account_api_key'] ?>"
+        class="regular-text"
       />
     <?php
     }
@@ -148,6 +159,22 @@ if (!class_exists('LiveEditorFileManagerPlugin')) {
         <?php if ($options["hide_media_tab"]) { ?>
           checked="checked"
         <?php } ?>
+      />
+    <?php
+    }
+
+    /**
+     * Displays text field for the "account subdomain" setting.
+     */
+    function display_subdomain_slug_text_field($data = array()) {
+      extract($data);
+      $options = get_option(self::OPTIONS_KEY);
+    ?>
+      <input
+        type="text"
+        name="<?php echo self::OPTIONS_KEY ?>[<?php echo $name ?>]"
+        value="<?php echo $options['subdomain_slug'] ?>"
+        class="regular-text"
       />
     <?php
     }
@@ -220,7 +247,8 @@ if (!class_exists('LiveEditorFileManagerPlugin')) {
      */
     private function valid_settings() {
       return array(
-        array("id" => "admin_api_key",  "type" => "text"),
+        array("id" => "subdomain_slug", "type" => "text"),
+        array("id" => "account_api_key",  "type" => "text"),
         array("id" => "hide_media_tab", "type" => "check_box")
       );
     }
