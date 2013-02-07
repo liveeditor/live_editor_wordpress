@@ -14,7 +14,7 @@ class LiveEditorFileManagerPlugin {
 
     // Actions
     add_action("admin_menu", array(&$this, "hide_media_tab"));  // Hide Media tab if the settings call for it
-    add_action("admin_head", array(&$this, "admin_styles"));    // Load stylesheet needed for this plugin to run
+    add_action("admin_head", array(&$this, "admin_assets"));    // Load stylesheet and JavaScript needed for this plugin to run
     add_action("admin_init", array(&$this, "admin_init"));      // Initialize settings that are configurable through admin
     add_action("admin_menu", array(&$this, "settings_menu"));   // Add settings menu to WP menu
     add_action("media_buttons", array(&$this, "media_button")); // Adds Live Editor media button
@@ -82,17 +82,17 @@ class LiveEditorFileManagerPlugin {
   }
 
   /**
-   * Loads styles needed for this plugin to run.
+   * Loads stylesheet and JavaScript needed for this plugin to run.
    */
-  function admin_styles() {
+  function admin_assets() {
     $options = get_option(self::OPTIONS_KEY);
+
+    // Our main stylesheet
   ?>
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="<?php echo getenv('PHP_LIVE_EDITOR_API_PROTOCOL') ?>www.<?php echo getenv('PHP_LIVE_EDITOR_API_DOMAIN') ?>/assets/wordpress_plugin.css"
-    />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->url_base() ?>/assets/wordpress_plugin.css" />
   <?php
+
+    // If user has opted to hide the media tab, hide the default "Add Media" button.
     if ($options["hide_media_tab"]) {
     ?>
       <style type="text/css">
@@ -102,6 +102,11 @@ class LiveEditorFileManagerPlugin {
       </style>
     <?php
     }
+
+    // Our main JavaScript
+    ?>
+      <script src="<?php echo $this->url_base() ?>/assets/wordpress_plugin.js"></script>
+    <?php
   }
 
   /**
@@ -192,7 +197,7 @@ class LiveEditorFileManagerPlugin {
    */
   function media_button() {
   ?>
-    <a href="#" class="button insert-live-editor-media" title="Add Media from Live Editor File Manager">
+    <a href="<?php echo $this->api_url('/wp/admin/resources') ?>" class="button insert-live-editor-media" title="Live Editor File Manager">
       <i class="media icon"></i>
       Add Media</a>
   <?php
@@ -248,6 +253,26 @@ class LiveEditorFileManagerPlugin {
     }
 
     return $final_settings;
+  }
+
+  /**
+   * Returns an API URL for a given path by prepending the URL base and adding API keys to end.
+   */
+  private function api_url($path) {
+    $options = get_option(self::OPTIONS_KEY);
+
+    $url  = $this->url_base() . $path;
+    $url .= strpos($path, "?") ? "&" : "?";
+    $url .= "account_api_key=" . $options["account_api_key"];
+
+    return $url;
+  }
+
+  /**
+   * Returns protocol and domain for Live Editor (e.g., `https://www.liveeditorcms.com`).
+   */
+  private function url_base() {
+    return getenv('PHP_LIVE_EDITOR_API_PROTOCOL') . "wp." . getenv('PHP_LIVE_EDITOR_API_DOMAIN');
   }
 
   /**
