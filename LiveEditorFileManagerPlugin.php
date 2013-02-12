@@ -13,11 +13,12 @@ class LiveEditorFileManagerPlugin {
     register_activation_hook(__FILE__, array(&$this, "activate"));
 
     // Actions
-    add_action("admin_menu", array(&$this, "hide_media_tab"));  // Hide Media tab if the settings call for it
-    add_action("admin_head", array(&$this, "admin_assets"));    // Load stylesheet and JavaScript needed for this plugin to run
-    add_action("admin_init", array(&$this, "admin_init"));      // Initialize settings that are configurable through admin
-    add_action("admin_menu", array(&$this, "settings_menu"));   // Add settings menu to WP menu
-    add_action("media_buttons", array(&$this, "media_button")); // Adds Live Editor media button
+    add_action("admin_menu", array(&$this, "hide_media_tab"));       // Hide Media tab if the settings call for it
+    add_action("admin_head", array(&$this, "admin_assets"));         // Load stylesheet and JavaScript needed for this plugin to run
+    add_action("admin_init", array(&$this, "admin_init"));           // Initialize settings that are configurable through admin
+    add_action("admin_menu", array(&$this, "settings_menu"));        // Add settings menu to WP menu
+    add_action("wp_ajax_editor_code", array(&$this, "editor_code")); // Add editor code insertion page for AJAX to call
+    add_action("media_buttons", array(&$this, "media_button"));      // Adds Live Editor media button
   }
 
   /**
@@ -182,6 +183,16 @@ class LiveEditorFileManagerPlugin {
   }
 
   /**
+   * Editor code insert page output. See `editor_code_insertion()` method.
+   */
+  function editor_code() {
+    // AJAX nonce makes sure outside hackers can't get into this script
+    check_ajax_referer("media_button");
+
+    die(file_get_contents($this->api_url("/wp/admin/resources/" . $_POST["resource_id"] . "/code"))); // This stops WP from returning a 0 or 1 to indicate success with AJAX request
+  }
+
+  /**
    * Hides Media menu if the setting is in place to do so.
    */
   function hide_media_tab() {
@@ -197,7 +208,15 @@ class LiveEditorFileManagerPlugin {
    */
   function media_button() {
   ?>
-    <a href="<?php echo $this->api_url('/wp/admin/resources') ?>" class="button insert-live-editor-media" title="Live Editor File Manager">
+    <a
+      id="live-editor-file-manager-add-media-link"
+      href="<?php echo $this->api_url('/wp/admin/resources', true) ?>"
+      class="button insert-live-editor-media"
+      title="Live Editor File Manager"
+      data-target-url="<?php echo admin_url("admin-ajax.php") ?>"
+      data-target-domain="<?php echo $this->url_base() ?>"
+      data-nonce="<?php echo wp_create_nonce('media_button') ?>"
+    >
       <i class="media icon"></i>
       Add Media</a>
   <?php
@@ -258,14 +277,29 @@ class LiveEditorFileManagerPlugin {
   /**
    * Returns an API URL for a given path by prepending the URL base and adding API keys to end.
    */
-  private function api_url($path) {
+  private function api_url($path, $escape_amp = false) {
     $options = get_option(self::OPTIONS_KEY);
+    $amp = $escape_amp ? "&amp;" : "&";
 
     $url  = $this->url_base() . $path;
-    $url .= strpos($path, "?") ? "&" : "?";
-    $url .= "account_api_key=" . $options["account_api_key"];
+    $url .= strpos($path, "?") ? $amp : "?";
+    $url .= "subdomain=" . urlencode($options["subdomain_slug"]);
+    $url .= $amp . "account_api_key=" . urlencode($options["account_api_key"]);
+    $url .= $amp . "wp_source=" . urlencode($this->full_url());
 
     return $url;
+  }
+
+  /**
+   * Returns full URL of current page.
+   * http://stackoverflow.com/questions/6768793/php-get-the-full-url
+   */
+  private function full_url() {
+    $s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
+    $sp = strtolower($_SERVER["SERVER_PROTOCOL"]);
+    $protocol = substr($sp, 0, strpos($sp, "/")) . $s;
+    $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]);
+    return $protocol . "://" . $_SERVER['SERVER_NAME'] . $port . $_SERVER['REQUEST_URI'];
   }
 
   /**
