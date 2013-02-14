@@ -1,9 +1,9 @@
 var liveEditorFileManagerPlugin = {
   insertTinyMceContent: function(data) {
-    // When `selection.getRng()` bug is fixed in TinyMCE, the monkey-patched code above this can be removed or only
-    // served for old versions of WordPress
+    // Insert content into WYSIWYG editor if it's active and visible
     if (tinymce.activeEditor && !tinymce.activeEditor.isHidden()) {
-      // Monkey-patched code so this can run in Internet Explorer. Otherwise, it throws a `SCRIPT5: Access is denied` error.
+      // When `selection.getRng()` bug is fixed in TinyMCE, this monkey-patched code can be removed or only targeted at certain WordPress versions.
+      // Without this monkey patch, Internet Explorer throws a `SCRIPT5: Access is denied` error for the `tinymce.activeEditor.execCommand()` call below.
       // @see http://www.tinymce.com/develop/bugtracker_view.php?id=5694
       // @see https://github.com/tinymce/tinymce/pull/122/files
       tinymce.activeEditor.selection.getRng = function(w3c) {
@@ -64,6 +64,7 @@ var liveEditorFileManagerPlugin = {
 
       tinymce.activeEditor.execCommand("mceInsertContent", false, data);
     }
+    // Insert content into raw HTML "Text" field if the Visual editor is hidden
     else {
       jQuery("#" + window.wpActiveEditor).insertAtCaret(data);
     }
