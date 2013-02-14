@@ -104,7 +104,13 @@ class LiveEditorFileManagerPlugin {
     <?php
     }
 
-    // Our main JavaScript
+    // JavaScript
+    wp_enqueue_script(
+      "live-editor-file-manager-plugin",
+      plugins_url('js/live-editor-file-manager-plugin.js', __FILE__),
+      "tinymce",
+      self::VERSION
+    );
     ?>
       <script src="<?php echo $this->url_base() ?>/assets/wordpress_plugin.js"></script>
     <?php
