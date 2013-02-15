@@ -213,10 +213,11 @@ class LiveEditorFileManagerPlugin {
    * Adds Live Editor media button to post and page editors.
    */
   function media_button() {
+    global $post_type;
   ?>
     <a
       id="live-editor-file-manager-add-media-link"
-      href="<?php echo $this->api_url('/wp/admin/resources', true) ?>"
+      href="<?php echo $this->api_url('/wp/admin/resources?post_type=' . $post_type, true) ?>"
       class="button insert-live-editor-media"
       title="Live Editor File Manager"
       data-target-url="<?php echo admin_url("admin-ajax.php") ?>"
