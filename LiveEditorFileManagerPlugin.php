@@ -277,7 +277,7 @@ class LiveEditorFileManagerPlugin {
     check_ajax_referer("media_button");
 
     // Calling `die()` stops WP from returning a 0 or 1 to indicate success with AJAX request
-    die(file_get_contents($this->api_url("/wp/admin/resources/" . $_POST["resource_id"] . "/code")));
+    die(file_get_contents($this->api_url("/wp/v1/admin/resources/" . $_POST["resource_id"] . "/code")));
   }
 
   /**
@@ -301,7 +301,7 @@ class LiveEditorFileManagerPlugin {
     ?>
       <a
         id="live-editor-file-manager-add-media-link"
-        href="<?php echo $this->api_url('/wp/admin/resources?post_type=' . $post_type, true) ?>"
+        href="<?php echo $this->api_url('/wp/v1/admin/resources?post_type=' . $post_type, true) ?>"
         class="button insert-live-editor-media"
         title="Live Editor File Manager"
         data-target-url="<?php echo admin_url("admin-ajax.php") ?>"
@@ -316,7 +316,7 @@ class LiveEditorFileManagerPlugin {
     ?>
       <a
         id="live-editor-file-manager-add-media-link"
-        href="<?php echo $this->api_url('/wp/admin/no-user-api-key') ?>"
+        href="<?php echo $this->api_url('/wp/v1/admin/no-user-api-key') ?>"
         class="button insert-live-editor-media"
         title="Live Editor File Manager"
       >
@@ -449,7 +449,6 @@ class LiveEditorFileManagerPlugin {
 
     $url  = $this->url_base() . $path;
     $url .= strpos($path, "?") ? $amp : "?";
-    $url .= "subdomain=" . urlencode($options["subdomain_slug"]);
     $url .= $amp . "account_api_key=" . urlencode($options["account_api_key"]);
 
     if (isset($user->live_editor_user_api_key)) {
@@ -477,7 +476,9 @@ class LiveEditorFileManagerPlugin {
    * Returns protocol and domain for Live Editor (e.g., `https://wp.liveeditorcms.com`).
    */
   private function url_base() {
-    return getenv('PHP_LIVE_EDITOR_API_PROTOCOL') . "wp." . getenv('PHP_LIVE_EDITOR_API_DOMAIN');
+    $options = get_option(self::OPTIONS_KEY);
+
+    return getenv('PHP_LIVE_EDITOR_API_PROTOCOL') . $options["subdomain_slug"] . "." . getenv('PHP_LIVE_EDITOR_API_DOMAIN');
   }
 
   /**
