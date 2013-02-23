@@ -1,4 +1,5 @@
 <?php
+require_once "api/LiveEditor.php";
 
 class LiveEditorFileManagerPlugin {
   const VERSION      = "0.1";
@@ -12,13 +13,21 @@ class LiveEditorFileManagerPlugin {
     // Activation
     register_activation_hook(__FILE__, array(&$this, "activate"));
 
-    // Actions
-    add_action("admin_menu", array(&$this, "hide_media_tab"));       // Hide Media tab if the settings call for it
-    add_action("admin_head", array(&$this, "admin_assets"));         // Load stylesheet and JavaScript needed for this plugin to run
-    add_action("admin_init", array(&$this, "admin_init"));           // Initialize settings that are configurable through admin
-    add_action("admin_menu", array(&$this, "settings_menu"));        // Add settings menu to WP menu
-    add_action("wp_ajax_editor_code", array(&$this, "editor_code")); // Add editor code insertion page for AJAX to call
-    add_action("media_buttons", array(&$this, "media_button"));      // Adds Live Editor media button
+    // Plugin settings
+    add_action("admin_head", array(&$this, "admin_assets"));  // Load stylesheet and JavaScript needed for this plugin to run
+    add_action("admin_init", array(&$this, "admin_init"));    // Initialize settings that are configurable through admin
+    add_action("admin_menu", array(&$this, "settings_menu")); // Add settings menu to WP menu
+    
+    // User API key in admin user profile
+    add_action("show_user_profile", array(&$this, "user_preferences"));            // Adds user API key field to user preferences
+    add_action("personal_options_update", array(&$this, "save_personal_options")); // Saves user API key in WP database
+    
+    // Using Live Editor within WordPress editors
+    add_action("admin_menu", array(&$this, "hide_media_tab"));          // Hide Media tab if the settings call for it
+    add_action("wp_ajax_editor_code", array(&$this, "editor_code"));    // Add editor code insertion page for AJAX to call
+    add_action("media_buttons", array(&$this, "media_button"));         // Adds Live Editor media button
+    add_action("publish_post", array(&$this, "create_resource_usages")); // Adds usage record for newly-published post
+    add_action("publish_page", array(&$this, "create_resource_usages")); // Adds usage record for newly-published page
   }
 
   /**
@@ -29,10 +38,10 @@ class LiveEditorFileManagerPlugin {
 
     // Initialize option defaults
     if (!$options) {
-      $options["version"]        = self::VERSION;
-      $options["subdomain_slug"] = null;
+      $options["version"]          = self::VERSION;
+      $options["subdomain_slug"]   = null;
       $options["account_api_key"]  = null;
-      $options["hide_media_tab"] = false;
+      $options["hide_media_tab"]   = false;
 
       add_option(self::OPTIONS_KEY, $options);
     }
@@ -140,6 +149,78 @@ class LiveEditorFileManagerPlugin {
   }
 
   /**
+   * Creates resource usage records for newly-published page or post.
+   */
+  function create_resource_usages($post_id) {
+    $options = get_option(self::OPTIONS_KEY);
+    $post = get_post($post_id);
+    $current_user = wp_get_current_user();
+
+    // Only perform this action if the plugin has an API key registered for the account and user
+    if (isset($options["account_api_key"]) && $options["account_api_key"] && isset($current_user->live_editor_user_api_key)) {
+      // Get domains so we can look for Live Editor usages
+      $domains = $this->api()->get_domains();
+      // Add `subdomain_slug.liveeditorcms.com` as default domain
+      $subdomain = new stdClass;
+      $subdomain->name = $options["subdomain_slug"] . "." . getenv("PHP_LIVE_EDITOR_API_DOMAIN");
+      array_push($domains, $subdomain);
+
+      // Get current file usages before we mess with them so we can delete unused ones later
+      $external_urls = $this->api()->get_file_usages_for_url($post->guid);
+
+      // Store file IDs for use later
+      $content_file_ids = array();
+
+      // Find Live Editor resources in content
+      foreach ($domains as $domain) {
+        // Match Live Editor URLs
+        $search = '/(href|src)="?(https?:?\/\/|\/\/)?' . str_replace(".", "\.", $domain->name) . '\//i';
+        if (preg_match_all($search, $post->post_content, &$matches, PREG_OFFSET_CAPTURE)) {
+          foreach ($matches[0] as $match) {
+            // Grab file ID from match
+            $file_id = substr($post->post_content, $match[1] + strlen($match[0]) + strlen("files/resources/"));
+            $file_id = substr($file_id, 0, strpos($file_id, "/"));
+            
+            // Hang onto this one for later
+            array_push($content_file_ids, $file_id);
+            
+            // See if this post is already associated with the file as a file usage
+            $file_usages = $this->api()->get_file_usages($file_id);
+
+            $usage_recorded = false;
+            foreach ($file_usages as $file_usage) {
+              if ($file_usage->usage->url == $post->guid) {
+                $usage_recorded = true;
+              }
+            }
+
+            // Add usage if it's not already recorded
+            if (!$usage_recorded) {
+              $external_url = array(
+                "external_url[title]" => strlen($post->post_title) ? $post->post_title : "WordPress Post",
+                "external_url[url]" => $post->guid,
+                "external_url[notes]" => "WordPress site."
+              );
+
+              $this->api()->create_external_url($file_id, $external_url);
+            }
+          }
+        }
+      }
+
+      // Remove unused file usages
+      foreach ($external_urls as $external_url) {
+        $file_id = $external_url->resource_usage->resource_id;
+        $external_url_id = $external_url->id;
+
+        if (array_search($file_id, $content_file_ids) === false) {
+          $this->api()->delete_file_external_url($file_id, $external_url_id);
+        }
+      }
+    }
+  }
+
+  /**
    * Displays text field for "admin API key" setting.
    */
   function display_account_api_key_text_field($data = array()) {
@@ -195,7 +276,8 @@ class LiveEditorFileManagerPlugin {
     // AJAX nonce makes sure outside hackers can't get into this script
     check_ajax_referer("media_button");
 
-    die(file_get_contents($this->api_url("/wp/admin/resources/" . $_POST["resource_id"] . "/code"))); // This stops WP from returning a 0 or 1 to indicate success with AJAX request
+    // Calling `die()` stops WP from returning a 0 or 1 to indicate success with AJAX request
+    die(file_get_contents($this->api_url("/wp/admin/resources/" . $_POST["resource_id"] . "/code")));
   }
 
   /**
@@ -214,19 +296,41 @@ class LiveEditorFileManagerPlugin {
    */
   function media_button() {
     global $post_type;
-  ?>
-    <a
-      id="live-editor-file-manager-add-media-link"
-      href="<?php echo $this->api_url('/wp/admin/resources?post_type=' . $post_type, true) ?>"
-      class="button insert-live-editor-media"
-      title="Live Editor File Manager"
-      data-target-url="<?php echo admin_url("admin-ajax.php") ?>"
-      data-target-domain="<?php echo $this->url_base() ?>"
-      data-nonce="<?php echo wp_create_nonce('media_button') ?>"
-    >
-      <i class="media icon"></i>
-      Add Media</a>
-  <?php
+
+    if (isset(wp_get_current_user()->live_editor_user_api_key)) {
+    ?>
+      <a
+        id="live-editor-file-manager-add-media-link"
+        href="<?php echo $this->api_url('/wp/admin/resources?post_type=' . $post_type, true) ?>"
+        class="button insert-live-editor-media"
+        title="Live Editor File Manager"
+        data-target-url="<?php echo admin_url("admin-ajax.php") ?>"
+        data-target-domain="<?php echo $this->url_base() ?>"
+        data-nonce="<?php echo wp_create_nonce('media_button') ?>"
+      >
+        <i class="media icon"></i>
+        Add Media</a>
+    <?php
+    }
+    else {
+    ?>
+      <a
+        id="live-editor-file-manager-add-media-link"
+        href="<?php echo $this->api_url('/wp/admin/no-user-api-key') ?>"
+        class="button insert-live-editor-media"
+        title="Live Editor File Manager"
+      >
+        <i class="media icon"></i>
+        Add Media</a>
+    <?php
+    }
+  }
+
+  /**
+   * Saves user API key to WP database.
+   */
+  function save_personal_options($user_id) {
+    update_user_meta($user_id, "live_editor_user_api_key", $_POST["live_editor_user_api_key"]);
   }
 
   /**
@@ -257,6 +361,45 @@ class LiveEditorFileManagerPlugin {
   }
 
   /**
+   * Fields to add to user preferences screen.
+   */
+  function user_preferences($user) {
+  ?>
+    <h3>Live Editor File Manager</h3>
+    <table class="form-table">
+      <tbody>
+        <tr>
+          <th>
+            <label for="live-editor-user-api-key">
+              User <abbr title="Application Programming Interface">API</abbr> Key
+            </label>
+          </th>
+          <td>
+            <input
+              type="text"
+              name="live_editor_user_api_key"
+              id="live-editor-user-api-key"
+              class="regular-text code"
+              <?php
+              if (isset($user->live_editor_user_api_key)) {
+              ?>
+                value="<?php echo htmlspecialchars($user->live_editor_user_api_key) ?>"
+              <?php
+              }
+              ?>
+            />
+            <span class="description">
+              View your profile in Live Editor to obtain your user
+              <abbr title="Application Programming Interface">API</abbr> key.
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  <?php
+  }
+
+  /**
    * Validates option settings posted by admin.
    */
   function validate_settings($input) {
@@ -282,16 +425,37 @@ class LiveEditorFileManagerPlugin {
   }
 
   /**
+   * Returns instance of API object.
+   */
+  private function api() {
+    $options = get_option(self::OPTIONS_KEY);
+    $current_user = wp_get_current_user();
+
+    return new LiveEditor(
+      $options["account_api_key"],
+      $current_user->live_editor_user_api_key,
+      $options["subdomain_slug"],
+      "Live Editor WordPress Plugin"
+    );
+  }
+
+  /**
    * Returns an API URL for a given path by prepending the URL base and adding API keys to end.
    */
   private function api_url($path, $escape_amp = false) {
     $options = get_option(self::OPTIONS_KEY);
     $amp = $escape_amp ? "&amp;" : "&";
+    $user = wp_get_current_user();
 
     $url  = $this->url_base() . $path;
     $url .= strpos($path, "?") ? $amp : "?";
     $url .= "subdomain=" . urlencode($options["subdomain_slug"]);
     $url .= $amp . "account_api_key=" . urlencode($options["account_api_key"]);
+
+    if (isset($user->live_editor_user_api_key)) {
+      $url .= $amp . "user_api_key=" . urlencode($user->live_editor_user_api_key);
+    }
+
     $url .= $amp . "wp_source=" . urlencode($this->full_url());
 
     return $url;
@@ -310,7 +474,7 @@ class LiveEditorFileManagerPlugin {
   }
 
   /**
-   * Returns protocol and domain for Live Editor (e.g., `https://www.liveeditorcms.com`).
+   * Returns protocol and domain for Live Editor (e.g., `https://wp.liveeditorcms.com`).
    */
   private function url_base() {
     return getenv('PHP_LIVE_EDITOR_API_PROTOCOL') . "wp." . getenv('PHP_LIVE_EDITOR_API_DOMAIN');
