@@ -23,9 +23,11 @@ class LiveEditorFileManagerPlugin {
     add_action("personal_options_update", array(&$this, "save_personal_options")); // Saves user API key in WP database
     
     // Using Live Editor within WordPress editors
-    add_action("admin_menu", array(&$this, "hide_media_tab"));          // Hide Media tab if the settings call for it
-    add_action("wp_ajax_editor_code", array(&$this, "editor_code"));    // Add editor code insertion page for AJAX to call
-    add_action("media_buttons", array(&$this, "media_button"));         // Adds Live Editor media button
+    add_action("admin_menu", array(&$this, "hide_media_tab"));           // Hide Media tab if the settings call for it
+    add_action("wp_ajax_resources", array(&$this, "resources"));         // Add resources page for AJAX to call
+    add_action("wp_ajax_resources_new", array(&$this, "resources_new")); // Add resources/new page for AJAX to call
+    add_action("wp_ajax_editor_code", array(&$this, "editor_code"));     // Add editor code insertion page for AJAX to call
+    add_action("media_buttons", array(&$this, "media_button"));          // Adds Live Editor media button
     add_action("publish_post", array(&$this, "create_resource_usages")); // Adds usage record for newly-published post
     add_action("publish_page", array(&$this, "create_resource_usages")); // Adds usage record for newly-published page
   }
@@ -100,6 +102,7 @@ class LiveEditorFileManagerPlugin {
     // Our main stylesheet
   ?>
     <link rel="stylesheet" type="text/css" href="<?php echo $this->url_base() ?>/assets/wordpress_plugin.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo plugins_url('stylesheets/styles.css', __FILE__) ?>" />
   <?php
 
     // If user has opted to hide the media tab, hide the default "Add Media" button.
@@ -116,7 +119,7 @@ class LiveEditorFileManagerPlugin {
     // JavaScript
     wp_enqueue_script(
       "live-editor-file-manager-plugin",
-      plugins_url('js/live-editor-file-manager-plugin.js', __FILE__),
+      plugins_url('javascripts/live-editor-file-manager-plugin.js', __FILE__),
       "tinymce",
       self::VERSION
     );
@@ -302,17 +305,41 @@ class LiveEditorFileManagerPlugin {
     ?>
       <a
         id="live-editor-file-manager-add-media-link"
-        href="<?php echo $this->api_url('/wp/v1/admin/resources?post_type=' . $post_type, true) ?>"
+        href="<?php echo admin_url("admin-ajax.php") ?>"
         class="button insert-live-editor-media"
         title="Live Editor File Manager"
-        data-target-url="<?php echo admin_url("admin-ajax.php") ?>"
         data-target-domain="<?php echo $this->url_base() ?>"
-        data-nonce="<?php echo wp_create_nonce('media_button') ?>"
+        data-nonce="<?php echo wp_create_nonce('resources') ?>"
+        data-post-type="<?php echo $this->post_type($post_type) ?>"
       >
         <i class="media icon"></i>
         Add Media</a>
     <?php
     }
+  }
+
+  /**
+   * Displays resources AJAX page.
+   */
+  function resources() {
+    // AJAX nonce makes sure outside hackers can't get into this script
+    check_ajax_referer("resources");
+
+    $files = $this->api()->get_files();
+
+    require_once "views/resources/index.php";
+    die();
+  }
+
+  /**
+   * Displays resources/new AJAX page.
+   */
+  function resources_new() {
+    // AJAX nonce makes sure outside hackers can't get into this script
+    check_ajax_referer("resources_new");
+
+    require_once "views/resources/new.php";
+    die();
   }
 
   /**
@@ -459,6 +486,13 @@ class LiveEditorFileManagerPlugin {
     $protocol = substr($sp, 0, strpos($sp, "/")) . $s;
     $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]);
     return $protocol . "://" . $_SERVER['SERVER_NAME'] . $port . $_SERVER['REQUEST_URI'];
+  }
+
+  /**
+   * Returns value for global `$post_type`.
+   */
+  private function post_type($post_type) {
+    return isset($post_type) && strlen($post_type) ? $post_type : "post";
   }
 
   /**

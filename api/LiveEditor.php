@@ -49,6 +49,13 @@ class LiveEditor {
   }
 
   /**
+   * Returns URL for a given file.
+   */
+  function get_file_url($file_id, $style = "original") {
+    return $this->makeRequest("/resources/" . $file_id . "/url/" . $style . ".json", "GET");
+  }
+
+  /**
    * Returns array of file usages for a given file ID.
    */
   function get_file_usages($file_id) {
@@ -60,6 +67,13 @@ class LiveEditor {
    */
   function get_file_usages_for_url($url) {
     return $this->makeRequest("/external-urls.json?url=" . urlencode($url), "GET");
+  }
+
+  /**
+   * Returns array of files based on search params.
+   */
+  function get_files() {
+    return $this->makeRequest("/resources.json", "GET");
   }
 
   /**
