@@ -28,6 +28,16 @@
         </div>
         <div class="media-sidebar">
           <input type="search" placeholder="Search" class="search" />
+
+          <h3>Show Types</h3>
+          <p>
+            <?php foreach($file_types as $file_type) : ?>
+              <label>
+                <input type="checkbox" name="file_types[]" value="<?php echo $file_type->id ?>" />
+                <?php echo $file_type->name ?>
+              </label><br />
+            <?php endforeach ?>
+          </p>
         </div>
       </div>
     </div>

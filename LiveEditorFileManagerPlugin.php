@@ -325,6 +325,8 @@ class LiveEditorFileManagerPlugin {
     // AJAX nonce makes sure outside hackers can't get into this script
     check_ajax_referer("resources");
 
+    $file_types = $this->api()->get_file_types();
+    var_dump($file_types);
     $files = $this->api()->get_files();
 
     require_once "views/resources/index.php";

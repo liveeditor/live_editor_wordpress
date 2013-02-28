@@ -49,6 +49,13 @@ class LiveEditor {
   }
 
   /**
+   * Returns array of file types.
+   */
+  function get_file_types() {
+    return $this->makeRequest("/resource-types.json", "GET");
+  }
+
+  /**
    * Returns URL for a given file.
    */
   function get_file_url($file_id, $style = "original") {
