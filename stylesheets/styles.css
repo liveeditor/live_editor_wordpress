@@ -5,67 +5,89 @@
     padding: 0 20px 20px;
   }
 
-    #cboxLoadedContent #files .file {
-         -moz-box-sizing: border-box;
-          -ms-box-sizing: border-box;
-           -o-box-sizing: border-box;
-      -webkit-box-sizing: border-box;
-              box-sizing: border-box;
-      display: block;
-      float: left;
-      margin: 0 0.5% 20px;
-      width: 32%;
+    #cboxLoadedContent #files .row {
+      overflow: hidden;
     }
 
-      #cboxLoadedContent #files .file .thumb {
-        display: table;
-        overflow: hidden;
-        width: 100%;
-        /* IE hacks */
-        #position: relative;
+      #cboxLoadedContent #files .row .file {
+           -moz-box-sizing: border-box;
+            -ms-box-sizing: border-box;
+             -o-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+                box-sizing: border-box;
+        display: block;
+        float: left;
+        margin: 0 0.5% 20px;
+        width: 32%;
       }
 
-        #cboxLoadedContent #files .file .thumb .thumbnail {
-          border: 1px solid #ddd;
-             -moz-border-radius: 4px;
-              -ms-border-radius: 4px;
-               -o-border-radius: 4px;
-          -webkit-border-radius: 4px;
-                  border-radius: 4px;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
-          display: table-cell;
-          height: 180px;
-          margin: auto;
-          padding: 4px;
-          outline: 0;
-          text-align: center;
-             -moz-transition: all 0.2s ease-in-out;
-              -ms-transition: all 0.2s ease-in-out;
-               -o-transition: all 0.2s ease-in-out;
-          -webkit-transition: all 0.2s ease-in-out;
-                  transition: all 0.2s ease-in-out;
-          vertical-align: middle;
+        #cboxLoadedContent #files .row .file .thumb {
+          display: table;
+          overflow: hidden;
           width: 100%;
           /* IE hacks */
-          #position: absolute;
-          #top: 50%;
+          #position: relative;
         }
 
-          #cboxLoadedContent #files .file .thumb .thumbnail img {
-            display: block;
-            height: auto;
-            margin-right: auto;
-            margin-left: auto;
-            max-height: 180px;
-            max-width: 260px;
+          #cboxLoadedContent #files .row .file .thumb .thumbnail {
+            border: 1px solid #ddd;
+               -moz-border-radius: 4px;
+                -ms-border-radius: 4px;
+                 -o-border-radius: 4px;
+            -webkit-border-radius: 4px;
+                    border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
+            display: table-cell;
+            height: 180px;
+            margin: auto;
+            padding: 4px;
+            outline: 0;
+            text-align: center;
+               -moz-transition: all 0.2s ease-in-out;
+                -ms-transition: all 0.2s ease-in-out;
+                 -o-transition: all 0.2s ease-in-out;
+            -webkit-transition: all 0.2s ease-in-out;
+                    transition: all 0.2s ease-in-out;
             vertical-align: middle;
             width: 100%;
+            /* IE hacks */
+            #position: absolute;
+            #top: 50%;
           }
 
-      #cboxLoadedContent #files .file h3 {
-        margin: 10px 0 5px;
-      }
+            #cboxLoadedContent #files .row .file .thumb .thumbnail img {
+              display: block;
+              height: auto;
+              margin-right: auto;
+              margin-left: auto;
+              max-height: 180px;
+              max-width: 260px;
+              vertical-align: middle;
+              width: 100%;
+            }
 
-      #cboxLoadedContent #files .file p {
-        margin: 0;
-      }
+        #cboxLoadedContent #files .row .file h3 {
+          margin: 10px 0 5px;
+        }
+
+        #cboxLoadedContent #files .row .file p {
+          margin: 0;
+        }
+
+  #cboxLoadedContent .media-sidebar {}
+
+    #cboxLoadedContent .media-sidebar #collections {}
+
+      #cboxLoadedContent .media-sidebar #collections ul {}
+
+        #cboxLoadedContent .media-sidebar #collections ul li {
+          margin-bottom: 0;
+        }
+
+          #cboxLoadedContent .media-sidebar #collections ul li label {
+            display: block;
+          }
+
+          #cboxLoadedContent .media-sidebar #collections ul li ul {
+            padding-left: 14px;
+          }

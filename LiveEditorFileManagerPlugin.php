@@ -308,7 +308,6 @@ class LiveEditorFileManagerPlugin {
         href="<?php echo admin_url("admin-ajax.php") ?>"
         class="button insert-live-editor-media"
         title="Live Editor File Manager"
-        data-target-domain="<?php echo $this->url_base() ?>"
         data-nonce="<?php echo wp_create_nonce('resources') ?>"
         data-post-type="<?php echo $this->post_type($post_type) ?>"
       >
@@ -325,9 +324,12 @@ class LiveEditorFileManagerPlugin {
     // AJAX nonce makes sure outside hackers can't get into this script
     check_ajax_referer("resources");
 
-    $file_types = $this->api()->get_file_types();
-    var_dump($file_types);
-    $files = $this->api()->get_files();
+    // Default values for params
+    $params = $this->request_params(array("post_type", "search", "file_types", "collections"));
+
+    $file_types  = $this->api()->get_file_types();
+    $collections = $this->api()->get_collections();
+    $files       = $this->api()->get_files($params);
 
     require_once "views/resources/index.php";
     die();
@@ -488,6 +490,27 @@ class LiveEditorFileManagerPlugin {
     $protocol = substr($sp, 0, strpos($sp, "/")) . $s;
     $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]);
     return $protocol . "://" . $_SERVER['SERVER_NAME'] . $port . $_SERVER['REQUEST_URI'];
+  }
+
+  /**
+   * Searches `$_GET` and `$_POST` arrays for given params.
+   */
+  private function request_params($params = array()) {
+    $request_params = array();
+
+    foreach ($params as $param) {
+      if (isset($_POST[$param])) {
+        $request_params[$param] = $_POST[$param];
+      }
+      elseif (isset($_GET[$param])) {
+        $request_params[$param] = $_GET[$param];
+      }
+      else {
+        $request_params[$param] = null;
+      }
+    }
+
+    return $request_params;
   }
 
   /**

@@ -42,6 +42,13 @@ class LiveEditor {
   }
 
   /**
+   * Returns array of collections in user's account.
+   */
+  function get_collections() {
+    return $this->makeRequest("/resources/collections.json", "GET");
+  }
+
+  /**
    * Returns array of domains associated with user's account.
    */
   function get_domains() {
@@ -79,8 +86,16 @@ class LiveEditor {
   /**
    * Returns array of files based on search params.
    */
-  function get_files() {
-    return $this->makeRequest("/resources.json", "GET");
+  function get_files($params = array()) {
+    if (array_key_exists("file_types", $params)) {
+      $params["resource_type_ids"] = $params["file_types"];
+    }
+
+    if (array_key_exists("collections", $params)) {
+      $params["collection_ids"] = $params["collections"];
+    }
+
+    return $this->makeRequest("/resources.json", "GET", $params);
   }
 
   /**
