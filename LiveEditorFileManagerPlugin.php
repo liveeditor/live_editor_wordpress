@@ -2,9 +2,10 @@
 require_once "api/LiveEditor.php";
 
 class LiveEditorFileManagerPlugin {
-  const VERSION      = "0.1";
-  const MINIMUM_WP   = "3.5";
-  const OPTIONS_KEY  = "live_editor_file_manager_plugin_options"; // Used as key in WP options table
+  const VERSION        = "0.1";
+  const MINIMUM_WP     = "3.5";
+  const OPTIONS_KEY    = "live_editor_file_manager_plugin_options"; // Used as key in WP options table
+  const FILES_PER_PAGE = 15;
 
   /**
    * Constructor.
@@ -325,11 +326,16 @@ class LiveEditorFileManagerPlugin {
     check_ajax_referer("resources");
 
     // Default values for params
-    $params = $this->request_params(array("post_type", "search", "file_types", "collections"));
+    global $params;
+    $params = $this->request_params(array("post_type", "search", "file_types", "collections", "page", "action"));
 
-    $file_types  = $this->api()->get_file_types();
-    $collections = $this->api()->get_collections();
-    $files       = $this->api()->get_files($params);
+    $file_types   = $this->api()->get_file_types();
+    $collections  = $this->api()->get_collections();
+    $files        = $this->api()->get_files($params);
+    $files_count  = $this->api()->get_files_count($params);
+    $current_page = $params["page"] ? $params["page"] : 1;
+    $per_page     = self::FILES_PER_PAGE;
+    $total_pages  = floor($files_count / $per_page) + ($files_count % $per_page ? 1 : 0);
 
     require_once "views/resources/index.php";
     die();
@@ -341,6 +347,10 @@ class LiveEditorFileManagerPlugin {
   function resources_new() {
     // AJAX nonce makes sure outside hackers can't get into this script
     check_ajax_referer("resources_new");
+
+    // Default values for params
+    global $params;
+    $params = $this->request_params(array("post_type", "action"));
 
     require_once "views/resources/new.php";
     die();

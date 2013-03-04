@@ -49,4 +49,18 @@ function collections_nested_set($collections, $selected_collections) {
   return $result;
 }
 
+/**
+ * Returns `disabled` class if there is no next page.
+ */
+function next_page_link_class($current_page, $total_pages) {
+  return $current_page == $total_pages ? "disabled" : "";
+}
+
+/**
+ * Returns `disabled` class if there is no previous page.
+ */
+function prev_page_link_class($current_page) {
+  return $current_page == 1 ? "disabled" : "";
+}
+
 ?>

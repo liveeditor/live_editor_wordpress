@@ -10,57 +10,85 @@
       Live Editor File Manager
     </h1>
   </div>
-  <div class="media-frame-content">
-    <div class="attachments-browser">
-      <div id="files" class="attachments">
-        <?php if (count($files)) : ?>
-          <?php $resource_counter = 0 ?>
-          <?php foreach($files as $file) : ?>
-            <?php if ($resource_counter == 0) : ?>
-              <div class="row">
-            <?php endif ?>
+  <form id="files-form" action="<?php echo admin_url("admin-ajax.php") ?>" method="get">
+    <input type="hidden" name="action" value="resources" />
+    <input type="hidden" name="post_type" value="<?php echo $params['post_type'] ?>" />
+    <input type="hidden" name="_ajax_nonce" value="<?php echo wp_create_nonce('resources') ?>" />
+    <input type="hidden" id="total-pages" value="<?php echo $total_pages ?>" />
 
-            <div class="file">
-              <div class="thumb">
-                <span class="thumbnail">
-                  <img src="<?php echo $this->api()->get_file_url($file->id, 'medium') ?>" alt="Thumbnail" /><br />
+    <div class="media-frame-content">
+      <div class="attachments-browser">
+        <div class="media-toolbar">
+          <div class="tablenav top">
+            <div class="tablenav-pages">
+              <span class="displaying-num">
+                <?php echo $files_count ?> items
+              </span>
+              <span class="pagination-links">
+                <a href="#" class="first-page <?php echo prev_page_link_class($current_page) ?> modal-ignore" title="Go to the first page">
+                  &laquo;</a>
+                <a href="#" class="prev-page <?php echo prev_page_link_class($current_page) ?> modal-ignore" title="Go to the previous page">
+                  &lsaquo;</a>
+                <span class="paging-input">
+                  <input id="current-page" class="current-page" title="Current page" type="text" name="page" value="<?php echo $current_page ?>" size="1" />
+                  of
+                  <span class="total-pages">
+                    <?php echo $total_pages ?>
+                  </span>
                 </span>
-              </div>
-              <h3><?php echo $file->title ?></h3>
-              <p>
-                <a href="#">Insert into <?php echo $params["post_type"] ?></a>
-              </p>
+                <a href="#" class="next-page <?php echo next_page_link_class($current_page, $total_pages) ?> modal-ignore" title="Go to the next page">
+                  &rsaquo;</a>
+                <a href="#" class="last-page <?php echo next_page_link_class($current_page, $total_pages) ?> modal-ignore" title="Go to the last page">
+                  &raquo;</a>
+              </span>
             </div>
+          </div>
+        </div>
 
-            <?php if ($resource_counter == 2) : ?>
+        <div id="files" class="attachments">
+          <?php if (count($files)) : ?>
+            <?php $resource_counter = 0 ?>
+            <?php foreach($files as $file) : ?>
+              <?php if ($resource_counter == 0) : ?>
+                <div class="row">
+              <?php endif ?>
+
+              <div class="file">
+                <div class="thumb">
+                  <span class="thumbnail">
+                    <img src="<?php echo $this->api()->get_file_url($file->id, 'medium') ?>" alt="Thumbnail" /><br />
+                  </span>
+                </div>
+                <h3><?php echo $file->title ?></h3>
+                <p>
+                  <a href="#">Insert into <?php echo $params["post_type"] ?></a>
+                </p>
+              </div>
+
+              <?php if ($resource_counter == 2) : ?>
+                </div>
+              <?php endif ?>
+
+              <?php
+                if ($resource_counter == 2) {
+                  $resource_counter = 0;
+                }
+                else {
+                  $resource_counter++;
+                }
+              ?>
+            <?php endforeach ?>
+            <?php if ($resource_counter > 0) : ?>
               </div>
             <?php endif ?>
-
-            <?php
-              if ($resource_counter == 2) {
-                $resource_counter = 0;
-              }
-              else {
-                $resource_counter++;
-              }
-            ?>
-          <?php endforeach ?>
-          <?php if ($resource_counter > 0) : ?>
-            </div>
+          <?php else : ?>
+            <p>
+              There are no files for the specified filters.
+            </p>
           <?php endif ?>
-        <?php else : ?>
-          <p>
-            There are no files for the specified filters.
-          </p>
-        <?php endif ?>
-      </div>
+        </div>
 
-      <div class="media-sidebar">
-        <form action="<?php echo admin_url("admin-ajax.php") ?>" method="get">
-          <input type="hidden" name="action" value="resources" />
-          <input type="hidden" name="post_type" value="<?php echo $params['post_type'] ?>" />
-          <input type="hidden" name="_ajax_nonce" value="<?php echo wp_create_nonce('resources') ?>" />
-
+        <div class="media-sidebar">
           <p>
             <input type="search" name="search" placeholder="Search" value="<?php echo $params['search'] ?>" class="search" />
           </p>
@@ -98,9 +126,9 @@
           <p>
             <input type="submit" value="Update Filters" class="button media-button" />
           </p>
-        </form>
+        </div>
       </div>
     </div>
-  </div>
+  </form>
 
 <?php require_once ABSPATH . "wp-content/plugins/live_editor_files_wordpress/views/layouts/footer.php" ?>

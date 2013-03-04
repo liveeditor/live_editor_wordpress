@@ -1,5 +1,9 @@
 #cboxLoadedContent {}
 
+  #cboxLoadedContent .media-frame .media-frame-content .media-toolbar input {
+    padding: 3px;
+  }
+
   #cboxLoadedContent #files {
     overflow-y: auto;
     padding: 0 20px 20px;

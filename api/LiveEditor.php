@@ -31,62 +31,80 @@ class LiveEditor {
    * Posts a new file usage record as an external URL.
    */
   function create_external_url($file_id, $external_url) {
-    return $this->makeRequest("/resources/" . $file_id . "/external-urls.json", "POST", $external_url);
+    return $this->make_request("/resources/" . $file_id . "/external-urls.json", "POST", $external_url);
   }
 
   /**
    * Deletes a file usage record with a given ID.
    */
   function delete_file_external_url($file_id, $id) {
-    return $this->makeRequest("/resources/" . $file_id . "/external-urls/" . $id, "DELETE");
+    return $this->make_request("/resources/" . $file_id . "/external-urls/" . $id, "DELETE");
   }
 
   /**
    * Returns array of collections in user's account.
    */
   function get_collections() {
-    return $this->makeRequest("/resources/collections.json", "GET");
+    return $this->make_request("/resources/collections.json", "GET");
   }
 
   /**
    * Returns array of domains associated with user's account.
    */
   function get_domains() {
-    return $this->makeRequest("/domains.json", "GET");
+    return $this->make_request("/domains.json", "GET");
   }
 
   /**
    * Returns array of file types.
    */
   function get_file_types() {
-    return $this->makeRequest("/resource-types.json", "GET");
+    return $this->make_request("/resource-types.json", "GET");
   }
 
   /**
    * Returns URL for a given file.
    */
   function get_file_url($file_id, $style = "original") {
-    return $this->makeRequest("/resources/" . $file_id . "/url/" . $style . ".json", "GET");
+    return $this->make_request("/resources/" . $file_id . "/url/" . $style . ".json", "GET");
   }
 
   /**
    * Returns array of file usages for a given file ID.
    */
   function get_file_usages($file_id) {
-    return $this->makeRequest("/resources/" . $file_id . "/usages.json", "GET");
+    return $this->make_request("/resources/" . $file_id . "/usages.json", "GET");
   }
 
   /**
    * Returns array of files associated with a given URL.
    */
   function get_file_usages_for_url($url) {
-    return $this->makeRequest("/external-urls.json?url=" . urlencode($url), "GET");
+    return $this->make_request("/external-urls.json?url=" . urlencode($url), "GET");
   }
 
   /**
    * Returns array of files based on search params.
    */
   function get_files($params = array()) {
+    $params = $this->clean_file_params($params);
+
+    return $this->make_request("/resources.json", "GET", $params);
+  }
+
+  /**
+   * Returns count of files based on search params.
+   */
+  function get_files_count($params = array()) {
+    $params = $this->clean_file_params($params);
+
+    return $this->make_request("/resources/count.json", "GET", $params);
+  }
+
+  /**
+   * Cleans up file query params.
+   */
+  private function clean_file_params($params) {
     if (array_key_exists("file_types", $params)) {
       $params["resource_type_ids"] = $params["file_types"];
     }
@@ -95,7 +113,7 @@ class LiveEditor {
       $params["collection_ids"] = $params["collections"];
     }
 
-    return $this->makeRequest("/resources.json", "GET", $params);
+    return $params;
   }
 
   /**
@@ -108,7 +126,7 @@ class LiveEditor {
    * @return object
    * @throws LiveEditor\Exception
    */
-  protected function makeRequest($url, $method = 'GET', $params = array()) {
+  protected function make_request($url, $method = 'GET', $params = array()) {
     $ch = curl_init();
     $options = self::$CURL_OPTS;
     $options[CURLOPT_URL] = $this->api_url($url);
@@ -120,9 +138,6 @@ class LiveEditor {
     else if ($method == 'PUT') {
       $options[CURLOPT_PUT] = true;
     }
-    //else if ($method == "DELETE") {
-    //  $options[CURLOPT_CUSTOMREQUEST] = "DELETE";
-    //}
 
     if (!empty($params)) {
       switch ($method) {
