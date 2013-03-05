@@ -13,7 +13,8 @@ function nav_active_class($section) {
       class="media-menu-item <?php echo nav_active_class('resources') ?>"
       data-action="resources"
       data-nonce="<?php echo wp_create_nonce('resources') ?>"
-      data-post-type="<?php echo $params["post_type"] ?>"
+      data-post-type="<?php echo $params['post_type'] ?>"
+      data-target-url="<?php echo $params['wp_source'] ?>"
     >
       Select Existing File
     </a>
@@ -24,6 +25,7 @@ function nav_active_class($section) {
       data-action="resources_new"
       data-nonce="<?php echo wp_create_nonce('resources_new') ?>"
       data-post-type="<?php echo $params["post_type"] ?>"
+      data-target-url="<?php echo $params['wp_source'] ?>"
     >
       New File
     </a>

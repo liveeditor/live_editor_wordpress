@@ -281,7 +281,7 @@ class LiveEditorFileManagerPlugin {
     check_ajax_referer("editor_code");
 
     global $params;
-    $params = $this->request_params(array("resource_id"));
+    $params = $this->request_params(array("resource_id", "wp_source"));
 
     // Calling `die()` stops WP from returning a 0 or 1 to indicate success with AJAX request
     die(file_get_contents($this->api_url("/resources/" . $params["resource_id"] . "/code")));
@@ -314,6 +314,9 @@ class LiveEditorFileManagerPlugin {
         title="Live Editor File Manager"
         data-nonce="<?php echo wp_create_nonce('resources') ?>"
         data-post-type="<?php echo $this->post_type($post_type) ?>"
+        data-target-domain="<?php echo $this->url_base() ?>"
+        data-target-url="<?php echo $this->full_url() ?>"
+        data-editor-code-nonce="<?php echo wp_create_nonce('editor_code') ?>"
       >
         <i class="media icon"></i>
         Add Media</a>
@@ -330,7 +333,7 @@ class LiveEditorFileManagerPlugin {
 
     // Default values for params
     global $params;
-    $params = $this->request_params(array("post_type", "search", "file_types", "collections", "page", "action"));
+    $params = $this->request_params(array("post_type", "wp_source", "search", "file_types", "collections", "page", "action"));
 
     $file_types   = $this->api()->get_file_types();
     $collections  = $this->api()->get_collections();
@@ -353,7 +356,7 @@ class LiveEditorFileManagerPlugin {
 
     // Default values for params
     global $params;
-    $params = $this->request_params(array("post_type", "action"));
+    $params = $this->request_params(array("post_type", "wp_source", "action"));
 
     require_once "views/resources/new.php";
     die();
@@ -475,14 +478,14 @@ class LiveEditorFileManagerPlugin {
   /**
    * Returns an API URL for a given path by prepending the URL base and adding API keys to end.
    */
-  private function api_url($path, $escape_amp = false) {
+  private function api_url($path, $escape_amp = false, $path_base = "/api/v1") {
     $options = get_option(self::OPTIONS_KEY);
     $amp = $escape_amp ? "&amp;" : "&";
     $user = wp_get_current_user();
 
-    $url  = $this->url_base() . "/api/v1" . $path;
+    $url  = $this->url_base() . $path_base . $path;
     $url .= strpos($path, "?") ? $amp : "?";
-    $url .= $amp . "account_api_key=" . urlencode($options["account_api_key"]);
+    $url .= "account_api_key=" . urlencode($options["account_api_key"]);
 
     if (isset($user->live_editor_user_api_key)) {
       $url .= $amp . "user_api_key=" . urlencode($user->live_editor_user_api_key);

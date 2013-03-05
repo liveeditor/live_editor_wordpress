@@ -15,7 +15,11 @@
     </div>
   </div>
   <div class="media-frame-content">
-    New
+    <iframe
+      src="<?php echo $this->api_url("/admin/resources/uploads/new?post_type=" . $params['post_type'] . "&amp;wp_source=" . urlencode($params['wp_source']) . "&amp;wp_nonce=" . urlencode(wp_create_nonce('editor_code')), true, "/wp/v1") ?>"
+      width="100%"
+      height="300"
+    ></iframe>
   </div>
 
 <?php require_once ABSPATH . "wp-content/plugins/live_editor_files_wordpress/views/layouts/footer.php" ?>

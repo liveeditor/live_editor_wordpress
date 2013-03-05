@@ -14,6 +14,7 @@
     <input type="hidden" name="action" value="resources" />
     <input type="hidden" name="post_type" value="<?php echo $params['post_type'] ?>" />
     <input type="hidden" name="_ajax_nonce" value="<?php echo wp_create_nonce('resources') ?>" />
+    <input type="hidden" name="wp_source" value="<?php $params['wp_source'] ?>" />
     <input type="hidden" id="total-pages" value="<?php echo $total_pages ?>" />
 
     <div class="media-frame-content">
