@@ -61,7 +61,15 @@
                 </div>
                 <h3><?php echo $file->title ?></h3>
                 <p>
-                  <a href="#">Insert into <?php echo $params["post_type"] ?></a>
+                  <a
+                    href="<?php echo admin_url("admin-ajax.php") ?>"
+                    class="insert-file modal-ignore"
+                    data-file-id="<?php echo $file->id ?>"
+                    data-action="editor_code"
+                    data-post-type="<?php echo $params['post_type'] ?>"
+                    data-nonce="<?php echo wp_create_nonce('editor_code') ?>"
+                  >
+                    Insert into <?php echo $params["post_type"] ?></a>
                 </p>
               </div>
 

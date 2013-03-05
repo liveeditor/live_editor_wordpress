@@ -278,10 +278,13 @@ class LiveEditorFileManagerPlugin {
    */
   function editor_code() {
     // AJAX nonce makes sure outside hackers can't get into this script
-    check_ajax_referer("media_button");
+    check_ajax_referer("editor_code");
+
+    global $params;
+    $params = $this->request_params(array("resource_id"));
 
     // Calling `die()` stops WP from returning a 0 or 1 to indicate success with AJAX request
-    die(file_get_contents($this->api_url("/wp/v1/admin/resources/" . $_POST["resource_id"] . "/code")));
+    die(file_get_contents($this->api_url("/resources/" . $params["resource_id"] . "/code")));
   }
 
   /**
@@ -477,15 +480,13 @@ class LiveEditorFileManagerPlugin {
     $amp = $escape_amp ? "&amp;" : "&";
     $user = wp_get_current_user();
 
-    $url  = $this->url_base() . $path;
+    $url  = $this->url_base() . "/api/v1" . $path;
     $url .= strpos($path, "?") ? $amp : "?";
     $url .= $amp . "account_api_key=" . urlencode($options["account_api_key"]);
 
     if (isset($user->live_editor_user_api_key)) {
       $url .= $amp . "user_api_key=" . urlencode($user->live_editor_user_api_key);
     }
-
-    $url .= $amp . "wp_source=" . urlencode($this->full_url());
 
     return $url;
   }
