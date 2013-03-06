@@ -49,6 +49,26 @@ function collections_nested_set($collections, $selected_collections) {
   return $result;
 }
 
+function insert_into_post_link($file, $params) {
+  // If encoded and final, display link
+  if ($file->final) {
+    return
+      '<a
+        href="' . admin_url("admin-ajax.php") . '"
+        class="insert-file modal-ignore"
+        data-file-id="' . $file->id . '"
+        data-action="editor_code"
+        data-post-type="' . $params['post_type'] . '"
+        data-nonce="' . wp_create_nonce('editor_code') . '"
+      >
+        Insert into ' . $params["post_type"] . '
+      </a>';
+  }
+  else {
+    return '<em>Processing file&hellip; Please wait.</em>';
+  }
+}
+
 /**
  * Returns `disabled` class if there is no next page.
  */
