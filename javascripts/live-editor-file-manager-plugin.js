@@ -70,3 +70,37 @@ var liveEditorFileManagerPlugin = {
     }
   }
 };
+
+jQuery(function() {
+  // Reusable functions
+  var
+    toggleMediaRouterContent = function() {
+      jQuery("#cboxLoadedContent div.media-router a").each(function() {
+        var $this = jQuery(this);
+
+        if ($this.hasClass("active")) {
+          jQuery("#cboxLoadedContent " + $this.attr("href")).show();
+        }
+        else {
+          jQuery("#cboxLoadedContent " + $this.attr("href")).hide();
+        }
+      });
+    };
+
+  // Init file uploader tabs
+  jQuery(document).bind('cbox_complete', function() {
+    if (jQuery("#cboxLoadedContent div.media-router").length) {
+      toggleMediaRouterContent();
+    }
+  });
+
+  // Click file uploader tabs
+  jQuery(document).on("click", "#cboxLoadedContent div.media-router a", function(e) {
+    // Handle tabs
+    jQuery("#cboxLoadedContent div.media-router a").removeClass("active");
+    jQuery(this).addClass("active");
+    toggleMediaRouterContent();
+
+    e.preventDefault();
+  });
+});
