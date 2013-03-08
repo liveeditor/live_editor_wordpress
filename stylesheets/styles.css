@@ -1,3 +1,27 @@
+.insert-live-editor-media.button {
+  padding-left: 0.4em;
+}
+
+.icon {
+  background: url(../images/sprites/icons.png) no-repeat;
+  display: inline-block;
+  padding: 0 !important;
+}
+
+  .icon.live-editor {
+    background-position: 0 -16px;
+    height: 24px;
+    vertical-align: text-top;
+    width: 24px;
+  }
+
+  .icon.media {
+    height: 15px;
+    margin: 0 2px;
+    vertical-align: text-top;
+    width: 15px;
+  }
+
 #cboxLoadedContent {}
 
   #cboxLoadedContent .media-frame .media-frame-content .media-toolbar input {

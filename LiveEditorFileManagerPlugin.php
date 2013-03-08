@@ -103,7 +103,7 @@ class LiveEditorFileManagerPlugin {
 
     // Our main stylesheet
   ?>
-    <link rel="stylesheet" type="text/css" href="<?php echo $this->url_base() ?>/assets/wordpress_plugin.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo plugins_url('stylesheets/colorbox.css', __FILE__) ?>" />
     <link rel="stylesheet" type="text/css" href="<?php echo plugins_url('stylesheets/styles.css', __FILE__) ?>" />
   <?php
 
@@ -120,14 +120,32 @@ class LiveEditorFileManagerPlugin {
 
     // JavaScript
     wp_enqueue_script(
+      "colorbox",
+      plugins_url('javascripts/jquery.colorbox.js', __FILE__),
+      "jquery",
+      self::VERSION
+    );
+
+    wp_enqueue_script(
+      "postmessage",
+      plugins_url('javascripts/jquery.ba-postmessage.js', __FILE__),
+      "jquery",
+      self::VERSION
+    );
+
+    wp_enqueue_script(
+      "insertAtCaret",
+      plugins_url('javascripts/jquery.insertAtCaret.js', __FILE__),
+      "jquery",
+      self::VERSION
+    );
+
+    wp_enqueue_script(
       "live-editor-file-manager-plugin",
       plugins_url('javascripts/live-editor-file-manager-plugin.js', __FILE__),
       "tinymce",
       self::VERSION
     );
-    ?>
-      <script src="<?php echo $this->url_base() ?>/assets/wordpress_plugin.js"></script>
-    <?php
   }
 
   /**
@@ -320,7 +338,7 @@ class LiveEditorFileManagerPlugin {
         data-editor-code-nonce="<?php echo wp_create_nonce('editor_code') ?>"
       >
         <i class="media icon"></i>
-        Add Media</a>
+        Live Editor Media</a>
     <?php
     }
   }

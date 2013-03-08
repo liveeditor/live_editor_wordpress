@@ -72,6 +72,9 @@ var liveEditorFileManagerPlugin = {
 };
 
 jQuery(function() {
+  //-----------------------------------------------------------------
+  // Functions/variables
+
   // Reusable functions
   var
     toggleMediaRouterContent = function() {
@@ -85,7 +88,189 @@ jQuery(function() {
           jQuery("#cboxLoadedContent " + $this.attr("href")).hide();
         }
       });
-    };
+    },
+
+    // Reusable variables/DOM queries
+    media_button = jQuery("a.insert-live-editor-media"),
+    media_link = jQuery("#live-editor-file-manager-add-media-link");
+
+
+  //-----------------------------------------------------------------
+  // Modal window
+
+  media_button.colorbox({
+    href: media_button.attr("href") + "?action=resources&_ajax_nonce=" + media_button.attr("data-nonce") + "&post_type=" + media_button.attr("data-post-type") + "&wp_source=" + encodeURIComponent(media_button.attr("data-target-url")),
+    fixed: true,
+    height: "93%",
+    width: "95%"
+  });
+
+  // Clicking links within lightbox
+  jQuery(document).on("click", "#cboxLoadedContent a:not(.modal-ignore)", function(e) {
+    var $this = jQuery(this);
+
+    jQuery.ajax({
+      url: $this.attr("href") + "?action=" + $this.attr("data-action") + "&_ajax_nonce=" + $this.attr("data-nonce") + "&post_type=" + $this.attr("data-post-type") + "&wp_source=" + encodeURIComponent($this.attr("data-target-url")),
+      type: "get",
+      cache: false,
+      success: function(data, status, xhr) {
+        var loaded_content = jQuery("#cboxLoadedContent");
+
+        loaded_content.html(jQuery(data));
+        loaded_content.scrollTop(0);
+        jQuery(document).trigger({
+          type: "cbox_complete"
+        });
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        alert("There was an error loading the link you clicked. Please try reloading the page and try again.");
+      }
+    });
+
+    e.preventDefault();
+  });
+
+  // Submitting forms within lightbox
+  jQuery(document).on("submit", "#cboxLoadedContent form:not(.modal-ignore)", function(e) {
+    var $this = jQuery(this);
+
+    jQuery.ajax({
+      url: $this.attr("action"),
+      type: "post",
+      data: $this.serialize(),
+      cache: false,
+      success: function(data, status, xhr) {
+        var loaded_content = jQuery("#cboxLoadedContent");
+
+        loaded_content.html(jQuery(data));
+        loaded_content.scrollTop(0);
+        jQuery(document).trigger({
+          type: "cbox_complete"
+        });
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        alert("There was an error loading the form submission. Please try reloading the page and try again.");
+      }
+    });
+
+    e.preventDefault();
+  });
+
+  // Attachment browser pagination
+  jQuery(document).on("click", "#cboxLoadedContent div.attachments-browser span.pagination-links a.first-page", function(e) {
+    jQuery("#current-page").val(1);
+    jQuery("#files-form").submit();
+    e.preventDefault();
+  });
+
+  jQuery(document).on("click", "#cboxLoadedContent div.attachments-browser span.pagination-links a.prev-page", function(e) {
+    var $this = jQuery(this),
+        current_page = jQuery("#current-page");
+
+    if (current_page.val() > 1) {
+      current_page.val(parseInt(current_page.val()) - 1);
+    }
+
+    jQuery("#files-form").submit();
+    
+    e.preventDefault();
+  });
+
+  jQuery(document).on("click", "#cboxLoadedContent div.attachments-browser span.pagination-links a.next-page", function(e) {
+    var $this = jQuery(this),
+        current_page = jQuery("#current-page"),
+        total_pages = jQuery("#total-pages").val();
+
+    if (current_page.val() < total_pages) {
+      current_page.val(parseInt(current_page.val()) + 1);
+    }
+
+    jQuery("#files-form").submit();
+
+    e.preventDefault();
+  });
+
+  jQuery(document).on("click", "#cboxLoadedContent div.attachments-browser span.pagination-links a.last-page", function(e) {
+    var $this = jQuery(this),
+        current_page = jQuery("#current-page"),
+        total_pages = jQuery("#total-pages").val();
+
+    current_page.val(total_pages);
+    jQuery("#files-form").submit();
+
+    e.preventDefault();
+  });
+
+  // Insert into post link
+  jQuery(document).on("click", "#cboxLoadedContent a.insert-file", function(e) {
+    var $this = jQuery(this),
+        file_id = $this.attr("data-file-id");
+
+    jQuery.ajax({
+      type: "post",
+      url: $this.attr("href"),
+      data: {
+        action: "editor_code",
+        resource_id: $this.attr("data-file-id"),
+        _ajax_nonce: $this.attr("data-nonce"),
+        post_type: $this.attr("data-post-type")
+      },
+      success: function(data, textStatus, jqXHR) {
+        if (typeof tinymce === "undefined") {
+          jQuery("#content").insertAtCaret(String(data));
+        }
+        else {
+          var my_data = String(data);
+          window.liveEditorFileManagerPlugin.insertTinyMceContent(my_data);
+        }
+        jQuery("#cboxClose").click();
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        alert("There was an error retrieving the code to add to your content.");
+      }
+    });
+
+    e.preventDefault();
+  });
+
+
+  //-----------------------------------------------------------------
+  // Receive resource requests from Live Editor domain
+
+  if (media_link.length) {
+    // e.data passed to this closure will contain ID of resource selected
+    jQuery.receiveMessage(
+      function(e) {
+        jQuery.ajax({
+          type: "post",
+          url: media_link.attr("href"),
+          data: {
+            action: "editor_code",
+            resource_id: e.data,
+            _ajax_nonce: media_link.attr("data-editor-code-nonce")
+          },
+          success: function(data, textStatus, jqXHR) {
+            if (typeof tinymce === "undefined") {
+              jQuery("#content").insertAtCaret(String(data));
+            }
+            else {
+              my_data = String(data);
+              window.liveEditorFileManagerPlugin.insertTinyMceContent(my_data);
+            }
+            jQuery("#cboxClose").click();
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            alert("There was an error retrieving the code to add to your content.");
+          }
+        });
+      },
+      media_link.attr("data-target-domain")
+    );
+  }
+
+
+  //-----------------------------------------------------------------
+  // File uploader tabs
 
   // Init file uploader tabs
   jQuery(document).bind('cbox_complete', function() {
