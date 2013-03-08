@@ -6,7 +6,7 @@
 
   <div class="media-frame-title">
     <h1>
-      <i class="live-editor icon"></i>
+      <a href="http://www.liveeditorcms.com/?utm_source=WordPress%2BPlugin&amp;utm_medium=link&amp;utm_term=header%2Bicon&amp;utm_content=v0.1&amp;utm_campaign=WordPress%2BPlugin" title="Live Editor"><i class="live-editor icon"></i></a>
       Live Editor File Manager
     </h1>
   </div>
