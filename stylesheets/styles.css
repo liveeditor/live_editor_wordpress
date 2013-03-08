@@ -128,3 +128,14 @@
   #cboxLoadedContent div.error {
     margin: 0 0 20px 0;
   }
+
+  #cboxLoadedContent .copyright {
+    color: #999;
+    font-size: 11px;
+    text-align: right;
+  }
+
+    #cboxLoadedContent .copyright a {
+      color: #555;
+      text-decoration: none;
+    }
