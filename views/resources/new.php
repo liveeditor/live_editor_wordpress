@@ -45,6 +45,9 @@
             <abbr title="Uniform Resource Locator">URL</abbr><br />
             <input type="text" name="url" value="<?php echo $params['url'] ?>" class="regular-text" />
           </label>
+          <p class="description">
+            Examples: <kbd>http://www.youtube.com/watch?v=gsMqakE7noE</kbd> or <kbd>http://vimeo.com/52302939</kbd>
+          </p>
         </p>
         <p>
           <input type="submit" value="Open File" class="button button-primary" />
