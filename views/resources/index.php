@@ -63,7 +63,7 @@
               <div class="file">
                 <div class="thumb">
                   <span class="thumbnail">
-                    <img src="<?php echo $this->api()->get_file_url($file->id, 'medium') ?>" alt="Thumbnail" /><br />
+                    <img src="<?php echo $this->api()->get_file_url($file->id, 'medium') ?>" alt="Thumbnail" />
                   </span>
                 </div>
                 <h3><?php echo $file->title ?></h3>
