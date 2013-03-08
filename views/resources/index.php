@@ -47,6 +47,12 @@
         </div>
 
         <div id="files" class="attachments">
+          <?php if ($params["import_success"]) : ?>
+            <div class="updated">
+              <p>The file was imported successfully.</p>
+            </div>
+          <?php endif ?>
+
           <?php if (count($files)) : ?>
             <?php $resource_counter = 0 ?>
             <?php foreach($files as $file) : ?>

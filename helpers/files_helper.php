@@ -1,5 +1,12 @@
 <?php
 /**
+ * Returns `active` class if `$tab` matches `$active_tab`.
+ */
+function active_tab_class($tab, $active_tab) {
+  return $tab == $active_tab ? "active" : "";
+}
+
+/**
  * Renders nested set collections data as a nested unordered list structure.
  * http://stackoverflow.com/a/1790201/175981
  */

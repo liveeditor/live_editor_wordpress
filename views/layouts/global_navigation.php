@@ -1,8 +1,14 @@
 <?php
 // Logic for whether or not a nav item is active
-function nav_active_class($section) {
+function nav_active_class($sections) {
   global $params;
-  return $params["action"] == $section ? "active" : "";
+
+  if (gettype($sections) == "array") {
+    return array_search($params["action"], $sections) !== false ? "active" : "";
+  }
+  else {
+    return $params["action"] == $sections ? "active" : "";
+  }
 }
 ?>
 
@@ -21,7 +27,7 @@ function nav_active_class($section) {
 
     <a
       href="<?php echo admin_url("admin-ajax.php") ?>"
-      class="media-menu-item <?php echo nav_active_class('resources_new') ?>"
+      class="media-menu-item <?php echo nav_active_class(array('resources_new', 'resources_create')) ?>"
       data-action="resources_new"
       data-nonce="<?php echo wp_create_nonce('resources_new') ?>"
       data-post-type="<?php echo $params["post_type"] ?>"

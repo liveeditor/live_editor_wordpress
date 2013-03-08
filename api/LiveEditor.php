@@ -35,6 +35,13 @@ class LiveEditor {
   }
 
   /**
+   * Posts new file import record.
+   */
+  function create_file_import($file) {
+    return $this->make_request("/resources/imports.json", "POST", $file);
+  }
+
+  /**
    * Deletes a file usage record with a given ID.
    */
   function delete_file_external_url($file_id, $id) {

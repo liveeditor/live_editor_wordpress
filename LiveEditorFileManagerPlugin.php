@@ -24,13 +24,14 @@ class LiveEditorFileManagerPlugin {
     add_action("personal_options_update", array(&$this, "save_personal_options")); // Saves user API key in WP database
     
     // Using Live Editor within WordPress editors
-    add_action("admin_menu", array(&$this, "hide_media_tab"));           // Hide Media tab if the settings call for it
-    add_action("wp_ajax_resources", array(&$this, "resources"));         // Add resources page for AJAX to call
-    add_action("wp_ajax_resources_new", array(&$this, "resources_new")); // Add resources/new page for AJAX to call
-    add_action("wp_ajax_editor_code", array(&$this, "editor_code"));     // Add editor code insertion page for AJAX to call
-    add_action("media_buttons", array(&$this, "media_button"));          // Adds Live Editor media button
-    add_action("publish_post", array(&$this, "create_resource_usages")); // Adds usage record for newly-published post
-    add_action("publish_page", array(&$this, "create_resource_usages")); // Adds usage record for newly-published page
+    add_action("admin_menu", array(&$this, "hide_media_tab"));                                 // Hide Media tab if the settings call for it
+    add_action("wp_ajax_resources", array(&$this, "resources"));                               // Add resources page for AJAX to call
+    add_action("wp_ajax_resources_new", array(&$this, "resources_new"));                       // Add resources/new page for AJAX to call
+    add_action("wp_ajax_resources_imports_create", array(&$this, "resources_imports_create")); // Create resource action for AJAX to call
+    add_action("wp_ajax_editor_code", array(&$this, "editor_code"));                           // Add editor code insertion page for AJAX to call
+    add_action("media_buttons", array(&$this, "media_button"));                                // Adds Live Editor media button
+    add_action("publish_post", array(&$this, "create_resource_usages"));                       // Adds usage record for newly-published post
+    add_action("publish_page", array(&$this, "create_resource_usages"));                       // Adds usage record for newly-published page
   }
 
   /**
@@ -333,7 +334,9 @@ class LiveEditorFileManagerPlugin {
 
     // Default values for params
     global $params;
-    $params = $this->request_params(array("post_type", "wp_source", "search", "file_types", "collections", "page", "action"));
+    $params = $this->request_params(
+      array("post_type", "wp_source", "search", "file_types", "collections", "page", "action", "import_success")
+    );
 
     $file_types   = $this->api()->get_file_types();
     $collections  = $this->api()->get_collections();
@@ -348,6 +351,42 @@ class LiveEditorFileManagerPlugin {
   }
 
   /**
+   * Creates a resource from URL.
+   */
+  function resources_imports_create() {
+    // AJAX nonce makes sure outside hackers can't get into this script
+    check_ajax_referer("resources_imports_create");
+
+    // Default values for params
+    global $params;
+    $params = $this->request_params(array("post_type", "wp_source", "action", "url"));
+
+    // Validate URL
+    $file = $this->api()->create_file_import(array("resource[url]" => $params["url"]));
+
+    if (array_key_exists("errors", $file) === false) {
+      $index_params = array(
+        "action" => "resources",
+        "post_type" => $params["post_type"],
+        "_ajax_nonce" => wp_create_nonce("resources"),
+        "wp_source" => $params["wp_source"],
+        "import_success" => true
+      );
+
+      header("Location: " . admin_url("admin-ajax.php") . "?" . http_build_query($index_params));
+    }
+    // Validation fails, show form with error
+    else {
+      $flash["error"] = "There was an error opening the URL. Please try again.";
+      global $active_tab;
+      $active_tab = "url-form";
+      require_once "views/resources/new.php";
+    }
+
+    die();
+  }
+
+  /**
    * Displays resources/new AJAX page.
    */
   function resources_new() {
@@ -356,8 +395,10 @@ class LiveEditorFileManagerPlugin {
 
     // Default values for params
     global $params;
-    $params = $this->request_params(array("post_type", "wp_source", "action"));
+    $params = $this->request_params(array("post_type", "wp_source", "action", "url"));
 
+    global $active_tab;
+    $active_tab = "upload-form";
     require_once "views/resources/new.php";
     die();
   }

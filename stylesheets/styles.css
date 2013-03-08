@@ -95,3 +95,12 @@
           #cboxLoadedContent .media-sidebar #collections ul li ul {
             padding-left: 14px;
           }
+
+  #cboxLoadedContent #url-form {
+    padding: 20px;
+  }
+
+  #cboxLoadedContent div.updated,
+  #cboxLoadedContent div.error {
+    margin: 0 0 20px 0;
+  }
