@@ -338,7 +338,7 @@ class LiveEditorFileManagerPlugin {
         data-editor-code-nonce="<?php echo wp_create_nonce('editor_code') ?>"
       >
         <i class="media icon"></i>
-        Live Editor Media</a>
+        Add Live Editor Media</a>
     <?php
     }
   }
@@ -356,13 +356,21 @@ class LiveEditorFileManagerPlugin {
       array("post_type", "wp_source", "search", "file_types", "collections", "page", "action", "import_success")
     );
 
-    $file_types   = $this->api()->get_file_types();
-    $collections  = $this->api()->get_collections();
-    $files        = $this->api()->get_files($params);
-    $files_count  = $this->api()->get_files_count($params);
-    $current_page = $params["page"] ? $params["page"] : 1;
-    $per_page     = self::FILES_PER_PAGE;
-    $total_pages  = floor($files_count / $per_page) + ($files_count % $per_page ? 1 : 0);
+    try {
+      $file_types   = $this->api()->get_file_types();
+      $collections  = $this->api()->get_collections();
+      $files        = $this->api()->get_files($params);
+      $files_count  = $this->api()->get_files_count($params);
+      $current_page = $params["page"] ? $params["page"] : 1;
+      $per_page     = self::FILES_PER_PAGE;
+      $total_pages  = floor($files_count / $per_page) + ($files_count % $per_page ? 1 : 0);
+    }
+    catch (Exception $e) {
+      if ($e->getCode() == 401) {
+        require_once "views/exceptions/unauthorized.php";
+        die();
+      }
+    }
 
     require_once "views/resources/index.php";
     die();

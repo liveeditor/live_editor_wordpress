@@ -170,6 +170,9 @@ class LiveEditor {
     if ($result === false) {
       throw new Exception(curl_error($ch), curl_errno($ch));
     }
+    elseif ($status == 401) {
+      throw new Exception("Unauthorized", 401);
+    }
 
     $result = json_decode($result);
 
