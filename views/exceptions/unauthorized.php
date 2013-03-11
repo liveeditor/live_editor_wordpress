@@ -27,7 +27,7 @@
       <p>
         For instructions on setting up your Live&nbsp;Editor WordPress plugin, see our
         <a href="http://www.liveeditorcms.com/help/wordpress-plugin?utm_source=WordPress%2BPlugin&amp;utm_medium=link&amp;utm_term=unauthorized&amp;utm_content=v0.1&amp;utm_campaign=WordPress%2BPlugin">
-        WordPress Plugin documentation</a>.
+        WordPress Plugin documentation</a> or contact your account administrator.
       </p>
     </div>
   </div>
