@@ -30,6 +30,7 @@ class LiveEditorFileManagerPlugin {
     add_action("wp_ajax_resources_imports_create", array(&$this, "resources_imports_create")); // Create resource action for AJAX to call
     add_action("wp_ajax_editor_code", array(&$this, "editor_code"));                           // Add editor code insertion page for AJAX to call
     add_action("media_buttons", array(&$this, "media_button"));                                // Adds Live Editor media button
+    add_action("wp_fullscreen_buttons", array(&$this, "media_button_fullscreen"));             // Adds Live Editor media button to fullscreen editor
     add_action("publish_post", array(&$this, "create_resource_usages"));                       // Adds usage record for newly-published post
     add_action("publish_page", array(&$this, "create_resource_usages"));                       // Adds usage record for newly-published page
   }
@@ -341,6 +342,26 @@ class LiveEditorFileManagerPlugin {
         Add Live Editor Media</a>
     <?php
     }
+  }
+
+  /**
+   * Adds Live Editor media button to fullscreen editor.
+   */
+  function media_button_fullscreen($buttons) {
+    $options = get_option(self::OPTIONS_KEY);
+
+    $buttons["live_editor_media"] = array(
+      "title"   => "Add Live Editor Media",
+      "onclick" => "jQuery('a.insert-live-editor-media').trigger('click');",
+      "both"    => true
+    );
+
+    // If we're removing the default WordPress media library, remove it from this array as well
+    if ($options["hide_media_tab"]) {
+      unset($buttons["image"]);
+    }
+
+    return $buttons;
   }
 
   /**

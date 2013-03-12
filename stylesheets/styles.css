@@ -1,3 +1,8 @@
+#wp-fullscreen-buttons #wp_fs_live_editor_media span.mce_live_editor_media {
+  background-image: url(../images/sprites/icons.png);
+  background-position: 2px 3px;
+}
+
 .insert-live-editor-media.button {
   padding-left: 0.4em;
 }
@@ -9,7 +14,7 @@
 }
 
   .icon.live-editor {
-    background-position: 0 -16px;
+    background-position: 0 -25px;
     height: 24px;
     vertical-align: text-top;
     width: 24px;
