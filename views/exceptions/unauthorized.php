@@ -1,5 +1,5 @@
-<?php require_once ABSPATH . "wp-content/plugins/live_editor_files_wordpress/views/layouts/header.php" ?>
-<?php require_once ABSPATH . "wp-content/plugins/live_editor_files_wordpress/helpers/files_helper.php" ?>
+<?php require_once ABSPATH . "wp-content/plugins/live_editor_file_manager/views/layouts/header.php" ?>
+<?php require_once ABSPATH . "wp-content/plugins/live_editor_file_manager/helpers/files_helper.php" ?>
 
 <div class="media-frame wp-core-ui hide-router">
   <div class="media-frame-menu">
@@ -32,4 +32,4 @@
     </div>
   </div>
 
-<?php require_once ABSPATH . "wp-content/plugins/live_editor_files_wordpress/views/layouts/footer.php" ?>
+<?php require_once ABSPATH . "wp-content/plugins/live_editor_file_manager/views/layouts/footer.php" ?>

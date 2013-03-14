@@ -1,8 +1,8 @@
-<?php require_once ABSPATH . "wp-content/plugins/live_editor_files_wordpress/views/layouts/header.php" ?>
-<?php require_once ABSPATH . "wp-content/plugins/live_editor_files_wordpress/helpers/files_helper.php" ?>
+<?php require_once ABSPATH . "wp-content/plugins/live_editor_file_manager/views/layouts/header.php" ?>
+<?php require_once ABSPATH . "wp-content/plugins/live_editor_file_manager/helpers/files_helper.php" ?>
 
 <div class="media-frame wp-core-ui hide-router">
-  <?php require_once ABSPATH . "wp-content/plugins/live_editor_files_wordpress/views/layouts/global_navigation.php" ?>
+  <?php require_once ABSPATH . "wp-content/plugins/live_editor_file_manager/views/layouts/global_navigation.php" ?>
 
   <div class="media-frame-title">
     <h1>
@@ -138,4 +138,4 @@
     </div>
   </form>
 
-<?php require_once ABSPATH . "wp-content/plugins/live_editor_files_wordpress/views/layouts/footer.php" ?>
+<?php require_once ABSPATH . "wp-content/plugins/live_editor_file_manager/views/layouts/footer.php" ?>
