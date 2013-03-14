@@ -138,6 +138,7 @@ class LiveEditor {
     $options = self::$CURL_OPTS;
     $options[CURLOPT_URL] = $this->api_url($url);
     $options[CURLOPT_USERAGENT] = $this->user_agent;
+    $options[CURLOPT_SSL_VERIFYPEER] = false; // TODO: Figure out a better fix for this
 
     if ($method == 'POST' || $method == "DELETE") {
       $options[CURLOPT_POST] = true;
@@ -165,7 +166,6 @@ class LiveEditor {
 
     $result = curl_exec($ch);
     $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
 
     if ($result === false) {
       throw new Exception(curl_error($ch), curl_errno($ch));
@@ -173,6 +173,8 @@ class LiveEditor {
     elseif ($status == 401) {
       throw new Exception("Unauthorized", 401);
     }
+
+    curl_close($ch);
 
     $result = json_decode($result);
 
