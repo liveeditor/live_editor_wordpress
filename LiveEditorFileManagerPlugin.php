@@ -391,6 +391,10 @@ class LiveEditorFileManagerPlugin {
         require_once "views/exceptions/unauthorized.php";
         die();
       }
+      else {
+        require_once "views/exceptions/error.php";
+        die();
+      }
     }
 
     require_once "views/resources/index.php";
