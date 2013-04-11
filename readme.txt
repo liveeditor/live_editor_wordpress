@@ -3,7 +3,7 @@ Contributors: liveeditor
 Tags: images, files, photos, video, audio, media, admin, image, photo, upload, digital asset management, documents
 Requires at least: 3.5
 Tested up to: 3.5.1
-Stable tag: 0.1
+Stable tag: 0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,15 +30,15 @@ First, install the Live Editor File Manager WordPress plugin:
 1. Install the Live Editor plugin either via the WordPress.org plugin directory or by uploading the files to your server.
 2. Activate the plugin in your WordPress dashboard.
 
-=== Configuration ===
+= Configuration =
 
 After installing the plugin, you need to do 4 more configurations, listed in the sections that follow.
 
-==== 1. Live Editor account ====
+**1. Live Editor account**
 
 If you haven't already, you can sign up for an account at LiveEditorCMS.com.
 
-==== 2. Account URL ====
+**2. Account URL**
 
 Each Live Editor account has an account URL that looks something like this:
 https://**example**.liveeditorcms.com/
@@ -47,7 +47,7 @@ It's the URL that you use to sign in to your Live Editor account. You'll need to
 
 Browse to your Live Editor File Manager settings in WordPress at Settings > File Manager. Then enter the subdomain for your Live Editor account into the Account Subdomain field.
 
-==== 3. Account API key ====
+**3. Account API key**
 
 Each Live Editor account has an API key. If you are an account administrator for your Live Editor account, you can log in to Live Editor and generate a new API key from the Settings section.
 
@@ -59,7 +59,7 @@ If you already have entered an API key, double-check that it matches the API key
 
 If you do not have access to your Live Editor and/or WordPress account settings, be sure to contact your account administrator for assistance.
 
-==== 4. User API key ====
+**4. User API key**
 
 Each user in Live Editor has an API key. Accordingly, each user in WordPress should have their own Live Editor user API key, and they will need to enter it into their WordPress profile settings.
 
@@ -119,4 +119,8 @@ We're honored to be asked about Live Editor's longevity because we know that it 
 == Changelog ==
 
 = 0.1 =
-* Initial release
+*  Initial release.
+
+= 0.2 =
+*  Removed need to have an account API key. Only a user API key is required now.
+*  Better detection of whether or not the plugin is configured correctly.

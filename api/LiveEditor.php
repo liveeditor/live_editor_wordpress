@@ -12,7 +12,6 @@ class LiveEditor {
     CURLOPT_TIMEOUT        => 60,
   );
 
-  private $account_api_key;
   private $user_api_key;
   private $subdomain_slug;
   private $user_agent;
@@ -20,8 +19,7 @@ class LiveEditor {
   /**
    * Constructor.
    */
-  function __construct($account_api_key, $user_api_key, $subdomain_slug, $user_agent = "Live Editor API PHP Wrapper") {
-    $this->account_api_key = $account_api_key;
+  function __construct($user_api_key, $subdomain_slug, $user_agent = "Live Editor API PHP Wrapper") {
     $this->user_api_key = $user_api_key;
     $this->subdomain_slug = $subdomain_slug;
     $this->user_agent = $user_agent;
@@ -186,14 +184,13 @@ class LiveEditor {
   }
 
   /**
-   * Returns an API URL for a given path by prepending the URL base and adding API keys to end.
+   * Returns an API URL for a given path by prepending the URL base and adding API key to end.
    */
   private function api_url($path, $escape_amp = false) {
     $amp = $escape_amp ? "&amp;" : "&";
 
     $url  = $this->url_base() . $path;
     $url .= strpos($path, "?") ? $amp : "?";
-    $url .= $amp . "account_api_key=" . urlencode($this->account_api_key);
     $url .= $amp . "user_api_key=" . urlencode($this->user_api_key);
 
     return $url;

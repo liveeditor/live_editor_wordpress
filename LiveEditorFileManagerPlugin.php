@@ -2,7 +2,7 @@
 require_once "api/LiveEditor.php";
 
 class LiveEditorFileManagerPlugin {
-  const VERSION        = "0.1";
+  const VERSION        = "0.2";
   const MINIMUM_WP     = "3.5";
   const OPTIONS_KEY    = "live_editor_file_manager_plugin_options"; // Used as key in WP options table
   const FILES_PER_PAGE = 15;
@@ -45,7 +45,6 @@ class LiveEditorFileManagerPlugin {
     if (!$options) {
       $options["version"]          = self::VERSION;
       $options["subdomain_slug"]   = null;
-      $options["account_api_key"]  = null;
       $options["hide_media_tab"]   = false;
 
       add_option(self::OPTIONS_KEY, $options);
@@ -75,15 +74,6 @@ class LiveEditorFileManagerPlugin {
       "live_editor_file_manager_settings_section",
       "live_editor_file_manager_main_settings_section",
       array("name" => "subdomain_slug")
-    );
-
-    add_settings_field(
-      "account_api_key",
-      "Account API Key",
-      array(&$this, "display_account_api_key_text_field"),
-      "live_editor_file_manager_settings_section",
-      "live_editor_file_manager_main_settings_section",
-      array("name" => "account_api_key")
     );
 
     add_settings_field(
@@ -157,9 +147,10 @@ class LiveEditorFileManagerPlugin {
     <div id="live-editor-file-manager-general" class="wrap">
       <h2>Live Editor File Manager Settings</h2>
       <p>
-        Settings for <a href="http://www.liveeditorcms.com/">Live Editor File Manager</a> integration with your
-        WordPress system. For documentation, reference our
-        <a href="http://www.liveeditorcms.com/help/wordpress-plugin">WordPress plugin instructions</a>.
+        Settings for
+        <a href="http://www.liveeditorcms.com/?utm_source=WordPress+Plugin&amp;utm_medium=config+page&amp;utm_content=v0.2&amp;utm_term=Live+Editor+File+Manager&amp;utm_campaign=WordPress+Plugin">Live Editor File Manager</a>
+        integration with your WordPress system. For documentation, reference our
+        <a href="http://www.liveeditorcms.com/help/wordpress-plugin?utm_source=WordPress+Plugin&amp;utm_medium=config+page&amp;utm_content=v0.2&amp;WordPress+plugin+instructions&amp;utm_campaign=WordPress+Plugin">WordPress plugin instructions</a>.
       </p>
       <form name="live_editor_file_manager_settings" action="options.php" method="post">
         <?php echo settings_fields("live_editor_file_manager_settings") ?>
@@ -180,8 +171,8 @@ class LiveEditorFileManagerPlugin {
     $post = get_post($post_id);
     $current_user = wp_get_current_user();
 
-    // Only perform this action if the plugin has an API key registered for the account and user
-    if (isset($options["account_api_key"]) && $options["account_api_key"] && isset($current_user->live_editor_user_api_key)) {
+    // Only perform this action if the plugin has an API key registered
+    if (isset($current_user->live_editor_user_api_key)) {
       // Get domains so we can look for Live Editor usages
       $domains = $this->api()->get_domains();
       // Add `subdomain_slug.liveeditorcms.com` as default domain
@@ -245,22 +236,6 @@ class LiveEditorFileManagerPlugin {
   }
 
   /**
-   * Displays text field for "admin API key" setting.
-   */
-  function display_account_api_key_text_field($data = array()) {
-    extract($data);
-    $options = get_option(self::OPTIONS_KEY);
-  ?>
-    <input
-      type="text"
-      name="<?php echo self::OPTIONS_KEY ?>[<?php echo $name ?>]"
-      value="<?php echo $options['account_api_key'] ?>"
-      class="regular-text"
-    />
-  <?php
-  }
-
-  /**
    * Displays check box for the "hide media tab" setting.
    */
   function display_hide_media_tab_check_box($data = array()) {
@@ -303,7 +278,7 @@ class LiveEditorFileManagerPlugin {
     global $params;
     $params = $this->request_params(array("resource_id", "wp_source"));
 
-    // Calling `die()` stops WP from returning a 0 or 1 to indicate success with AJAX request
+    // Calling `die()` stops WP from returning a `0` or `1` to indicate success with AJAX request
     die(file_get_contents($this->api_url("/resources/" . $params["resource_id"] . "/code")));
   }
 
@@ -379,6 +354,13 @@ class LiveEditorFileManagerPlugin {
 
     try {
       $file_types   = $this->api()->get_file_types();
+
+      // File types are always there, so use them as a litmus test as to whether or not the API is working
+      if (!count($file_types)) {
+        require_once "views/exceptions/unauthorized.php";
+        die();
+      }
+
       $collections  = $this->api()->get_collections();
       $files        = $this->api()->get_files($params);
       $files_count  = $this->api()->get_files_count($params);
@@ -560,7 +542,6 @@ class LiveEditorFileManagerPlugin {
     $current_user = wp_get_current_user();
 
     return new LiveEditor(
-      $options["account_api_key"],
       $current_user->live_editor_user_api_key,
       $options["subdomain_slug"],
       "Live Editor WordPress Plugin"
@@ -577,10 +558,9 @@ class LiveEditorFileManagerPlugin {
 
     $url  = $this->url_base() . $path_base . $path;
     $url .= strpos($path, "?") ? $amp : "?";
-    $url .= "account_api_key=" . urlencode($options["account_api_key"]);
 
     if (isset($user->live_editor_user_api_key)) {
-      $url .= $amp . "user_api_key=" . urlencode($user->live_editor_user_api_key);
+      $url .= "user_api_key=" . urlencode($user->live_editor_user_api_key);
     }
 
     return $url;
@@ -641,7 +621,6 @@ class LiveEditorFileManagerPlugin {
   private function valid_settings() {
     return array(
       array("id" => "subdomain_slug", "type" => "text"),
-      array("id" => "account_api_key",  "type" => "text"),
       array("id" => "hide_media_tab", "type" => "check_box")
     );
   }
