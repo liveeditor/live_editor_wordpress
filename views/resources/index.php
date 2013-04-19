@@ -49,7 +49,9 @@
         <div id="files" class="attachments">
           <?php if ($params["import_success"]) : ?>
             <div class="updated">
-              <p>The file was imported successfully.</p>
+              <p>
+                The file was queued for processing. It may take a few minutes for it to appear in your list of files.
+              </p>
             </div>
           <?php endif ?>
 
