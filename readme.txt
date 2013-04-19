@@ -3,7 +3,7 @@ Contributors: liveeditor
 Tags: images, files, photos, video, audio, media, admin, image, photo, upload, digital asset management, documents
 Requires at least: 3.5
 Tested up to: 3.5.1
-Stable tag: 0.2
+Stable tag: 0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -124,3 +124,6 @@ We're honored to be asked about Live Editor's longevity because we know that it 
 = 0.2 =
 *  Removed need to have an account API key. Only a user API key is required now.
 *  Better detection of whether or not the plugin is configured correctly.
+
+= 0.3 =
+*  Support for any import URL, not just YouTube and Vimeo
