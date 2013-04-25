@@ -51,6 +51,7 @@
         display: block;
         float: left;
         margin: 0 0.5% 20px;
+        overflow: auto;
         width: 32%;
       }
 
