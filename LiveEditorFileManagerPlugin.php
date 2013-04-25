@@ -33,6 +33,7 @@ class LiveEditorFileManagerPlugin {
     add_action("wp_fullscreen_buttons", array(&$this, "media_button_fullscreen"));             // Adds Live Editor media button to fullscreen editor
     add_action("publish_post", array(&$this, "create_resource_usages"));                       // Adds usage record for newly-published post
     add_action("publish_page", array(&$this, "create_resource_usages"));                       // Adds usage record for newly-published page
+    add_action("wp_trash_post", array(&$this, "delete_resource_usages"));                      // Deletes usages records for trashed post or page
   }
 
   /**
@@ -231,6 +232,29 @@ class LiveEditorFileManagerPlugin {
         if (array_search($file_id, $content_file_ids) === false) {
           $this->api()->delete_file_external_url($file_id, $external_url_id);
         }
+      }
+    }
+  }
+
+  /**
+   *  Deletes usages records for trashed post or page.
+   */
+  function delete_resource_usages($post_id) {
+    $options = get_option(self::OPTIONS_KEY);
+    $post = get_post($post_id);
+    $current_user = wp_get_current_user();
+
+    // Only perform this action if the plugin has an API key registered
+    if (isset($current_user->live_editor_user_api_key)) {
+      // Get current file usages
+      $external_urls = $this->api()->get_file_usages_for_url($post->guid);
+
+      // Delete external URLs
+      foreach ($external_urls as $external_url) {
+        $file_id = $external_url->resource_usage->resource_id;
+        $external_url_id = $external_url->id;
+
+        $this->api()->delete_file_external_url($file_id, $external_url_id);
       }
     }
   }
