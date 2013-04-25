@@ -9,7 +9,7 @@
 
   <div class="media-frame-title">
     <h1>
-      <a href="http://www.liveeditorcms.com/?utm_source=WordPress%2BPlugin&amp;utm_medium=link&amp;utm_term=header%2Bicon&amp;utm_content=v0.3.1&amp;utm_campaign=WordPress%2BPlugin" title="Live Editor"><i class="live-editor icon"></i></a>
+      <a href="http://www.liveeditorcms.com/?utm_source=WordPress%2BPlugin&amp;utm_medium=link&amp;utm_term=header%2Bicon&amp;utm_content=v<?php echo self::VERSION ?>&amp;utm_campaign=WordPress%2BPlugin" title="Live Editor"><i class="live-editor icon"></i></a>
       Live Editor File Manager
     </h1>
   </div>
@@ -25,7 +25,7 @@
       </ol>
       <p>
         For instructions on setting up your Live&nbsp;Editor WordPress plugin, see our
-        <a href="http://www.liveeditorcms.com/help/wordpress-plugin?utm_source=WordPress%2BPlugin&amp;utm_medium=link&amp;utm_term=unauthorized&amp;utm_content=v0.3.1&amp;utm_campaign=WordPress%2BPlugin">
+        <a href="http://www.liveeditorcms.com/help/wordpress-plugin?utm_source=WordPress%2BPlugin&amp;utm_medium=link&amp;utm_term=unauthorized&amp;utm_content=v<?php echo self::VERSION ?>&amp;utm_campaign=WordPress%2BPlugin">
         WordPress Plugin documentation</a> or contact your account administrator.
       </p>
     </div>
