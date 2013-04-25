@@ -56,6 +56,9 @@ function collections_nested_set($collections, $selected_collections) {
   return $result;
 }
 
+/**
+ * Returns link markup for inserting link into post, but a "Processing file..." message if it's not ready.
+ */
 function insert_into_post_link($file, $params) {
   // If encoded and final, display link
   if ($file->final) {
