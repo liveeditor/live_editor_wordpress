@@ -2,7 +2,7 @@
 require_once "api/LiveEditor.php";
 
 class LiveEditorFileManagerPlugin {
-  const VERSION        = "0.3";
+  const VERSION        = "0.3.1";
   const MINIMUM_WP     = "3.5";
   const OPTIONS_KEY    = "live_editor_file_manager_plugin_options"; // Used as key in WP options table
   const FILES_PER_PAGE = 15;
@@ -148,9 +148,9 @@ class LiveEditorFileManagerPlugin {
       <h2>Live Editor File Manager Settings</h2>
       <p>
         Settings for
-        <a href="http://www.liveeditorcms.com/?utm_source=WordPress+Plugin&amp;utm_medium=config+page&amp;utm_content=v0.3&amp;utm_term=Live+Editor+File+Manager&amp;utm_campaign=WordPress+Plugin">Live Editor File Manager</a>
+        <a href="http://www.liveeditorcms.com/?utm_source=WordPress+Plugin&amp;utm_medium=config+page&amp;utm_content=v0.3.1&amp;utm_term=Live+Editor+File+Manager&amp;utm_campaign=WordPress+Plugin">Live Editor File Manager</a>
         integration with your WordPress system. For documentation, reference our
-        <a href="http://www.liveeditorcms.com/help/wordpress-plugin?utm_source=WordPress+Plugin&amp;utm_medium=config+page&amp;utm_content=v0.3&amp;WordPress+plugin+instructions&amp;utm_campaign=WordPress+Plugin">WordPress plugin instructions</a>.
+        <a href="http://www.liveeditorcms.com/help/wordpress-plugin?utm_source=WordPress+Plugin&amp;utm_medium=config+page&amp;utm_content=v0.3.1&amp;WordPress+plugin+instructions&amp;utm_campaign=WordPress+Plugin">WordPress plugin instructions</a>.
       </p>
       <form name="live_editor_file_manager_settings" action="options.php" method="post">
         <?php echo settings_fields("live_editor_file_manager_settings") ?>
