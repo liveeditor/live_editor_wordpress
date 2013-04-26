@@ -130,3 +130,4 @@ We're honored to be asked about Live Editor's longevity because we know that it 
 
 = 0.3.1 =
 *  Fix styling of titles so super long words do not bleed past the bounding box.
+*  Now removes associated usages in Live Editor when WordPress post/page is trashed.
