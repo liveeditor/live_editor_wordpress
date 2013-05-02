@@ -2,7 +2,7 @@
 require_once "api/LiveEditor.php";
 
 class LiveEditorFileManagerPlugin {
-  const VERSION        = "0.3.1";
+  const VERSION        = "0.4";
   const MINIMUM_WP     = "3.5";
   const OPTIONS_KEY    = "live_editor_file_manager_plugin_options"; // Used as key in WP options table
   const FILES_PER_PAGE = 15;
@@ -44,9 +44,10 @@ class LiveEditorFileManagerPlugin {
 
     // Initialize option defaults
     if (!$options) {
-      $options["version"]          = self::VERSION;
-      $options["subdomain_slug"]   = null;
-      $options["hide_media_tab"]   = false;
+      $options["version"]                = self::VERSION;
+      $options["subdomain_slug"]         = null;
+      $options["hide_media_tab"]         = false;
+      $options["hide_add_media_buttons"] = false;
 
       add_option(self::OPTIONS_KEY, $options);
     }
@@ -79,11 +80,20 @@ class LiveEditorFileManagerPlugin {
 
     add_settings_field(
       "hide_media_tab",
-      "Hide WordPress Media Tab",
+      "Hide WordPress <em>Media</em> Section from Menu",
       array(&$this, "display_hide_media_tab_check_box"),
       "live_editor_file_manager_settings_section",
       "live_editor_file_manager_main_settings_section",
       array("name" => "hide_media_tab")
+    );
+
+    add_settings_field(
+      "hide_add_media_buttons",
+      "Hide WordPress <em>Add Media</em> Buttons",
+      array(&$this, "display_hide_add_media_buttons_check_box"),
+      "live_editor_file_manager_settings_section",
+      "live_editor_file_manager_main_settings_section",
+      array("name" => "hide_add_media_buttons")
     );
   }
 
@@ -99,8 +109,8 @@ class LiveEditorFileManagerPlugin {
     <link rel="stylesheet" type="text/css" href="<?php echo plugins_url('stylesheets/styles.css', __FILE__) ?>" />
   <?php
 
-    // If user has opted to hide the media tab, hide the default "Add Media" button.
-    if ($options["hide_media_tab"]) {
+    // Hide the default "Add Media" button if the admin has opted to do so.
+    if (array_key_exists("hide_add_media_buttons", $options) && $options["hide_add_media_buttons"]) {
     ?>
       <style type="text/css">
         .insert-media.add_media.button {
@@ -149,9 +159,9 @@ class LiveEditorFileManagerPlugin {
       <h2>Live Editor File Manager Settings</h2>
       <p>
         Settings for
-        <a href="http://www.liveeditorcms.com/?utm_source=WordPress+Plugin&amp;utm_medium=config+page&amp;utm_content=v0.3.1&amp;utm_term=Live+Editor+File+Manager&amp;utm_campaign=WordPress+Plugin">Live Editor File Manager</a>
+        <a href="http://www.liveeditorcms.com/?utm_source=WordPress+Plugin&amp;utm_medium=config+page&amp;utm_content=v<?php echo self::VERSION ?>&amp;utm_term=Live+Editor+File+Manager&amp;utm_campaign=WordPress+Plugin">Live Editor File Manager</a>
         integration with your WordPress system. For documentation, reference our
-        <a href="http://www.liveeditorcms.com/help/wordpress-plugin?utm_source=WordPress+Plugin&amp;utm_medium=config+page&amp;utm_content=v0.3.1&amp;WordPress+plugin+instructions&amp;utm_campaign=WordPress+Plugin">WordPress plugin instructions</a>.
+        <a href="http://www.liveeditorcms.com/help/wordpress-plugin?utm_source=WordPress+Plugin&amp;utm_medium=config+page&amp;utm_content=v<?php echo self::VERSION ?>&amp;WordPress+plugin+instructions&amp;utm_campaign=WordPress+Plugin">WordPress plugin instructions</a>.
       </p>
       <form name="live_editor_file_manager_settings" action="options.php" method="post">
         <?php echo settings_fields("live_editor_file_manager_settings") ?>
@@ -260,6 +270,23 @@ class LiveEditorFileManagerPlugin {
   }
 
   /**
+   * Displays check box for the "hide media buttons" setting.
+   */
+  function display_hide_add_media_buttons_check_box($data = array()) {
+    extract($data);
+    $options = get_option(self::OPTIONS_KEY);
+  ?>
+    <input
+      type="checkbox"
+      name="<?php echo self::OPTIONS_KEY ?>[<?php echo $name ?>]"
+      <?php if (array_key_exists("hide_add_media_buttons", $options) && $options["hide_add_media_buttons"]) : ?>
+        checked="checked"
+      <?php endif ?>
+    />
+  <?php
+  }
+
+  /**
    * Displays check box for the "hide media tab" setting.
    */
   function display_hide_media_tab_check_box($data = array()) {
@@ -356,7 +383,7 @@ class LiveEditorFileManagerPlugin {
     );
 
     // If we're removing the default WordPress media library, remove it from this array as well
-    if ($options["hide_media_tab"]) {
+    if ($options["hide_add_media_buttons"]) {
       unset($buttons["image"]);
     }
 
@@ -644,8 +671,9 @@ class LiveEditorFileManagerPlugin {
    */
   private function valid_settings() {
     return array(
-      array("id" => "subdomain_slug", "type" => "text"),
-      array("id" => "hide_media_tab", "type" => "check_box")
+      array("id" => "subdomain_slug",     "type" => "text"),
+      array("id" => "hide_media_tab",     "type" => "check_box"),
+      array("id" => "hide_add_media_buttons", "type" => "check_box")
     );
   }
 }

@@ -3,7 +3,7 @@ Contributors: liveeditor
 Tags: images, files, photos, video, audio, media, admin, image, photo, upload, digital asset management, documents
 Requires at least: 3.5
 Tested up to: 3.5.1
-Stable tag: 0.3.1
+Stable tag: 0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -131,3 +131,6 @@ We're honored to be asked about Live Editor's longevity because we know that it 
 = 0.3.1 =
 *  Fix styling of titles so super long words do not bleed past the bounding box.
 *  Now removes associated usages in Live Editor when WordPress post/page is trashed.
+
+= 0.4 =
+*  Added "Hide WordPress Add Media Buttons" option and separated it from the "Hide WordPress Media Section from Menu" option.
