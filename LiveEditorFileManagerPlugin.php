@@ -159,7 +159,7 @@ class LiveEditorFileManagerPlugin {
       <h2>Live Editor File Manager Settings</h2>
       <p>
         Settings for
-        <a href="http://www.liveeditorcms.com/?utm_source=WordPress+Plugin&amp;utm_medium=config+page&amp;utm_content=v<?php echo self::VERSION ?>&amp;utm_term=Live+Editor+File+Manager&amp;utm_campaign=WordPress+Plugin">Live Editor File Manager</a>
+        <a href="http://www.liveeditorcms.com/file-manager?utm_source=WordPress+Plugin&amp;utm_medium=config+page&amp;utm_content=v<?php echo self::VERSION ?>&amp;utm_term=Live+Editor+File+Manager&amp;utm_campaign=WordPress+Plugin">Live&nbsp;Editor File Manager</a>
         integration with your WordPress system. For documentation, reference our
         <a href="http://www.liveeditorcms.com/help/wordpress-plugin?utm_source=WordPress+Plugin&amp;utm_medium=config+page&amp;utm_content=v<?php echo self::VERSION ?>&amp;WordPress+plugin+instructions&amp;utm_campaign=WordPress+Plugin">WordPress plugin instructions</a>.
       </p>

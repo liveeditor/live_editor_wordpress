@@ -5,7 +5,7 @@ Plugin URI: http://www.liveeditorcms.com/wordpress?utm_source=WordPress%2BPlugin
 Description: Allows you to add Files from your Live Editor account into WordPress posts and pages.
 Version: 0.4
 Author: Live Editor
-Author URI: http://www.liveeditorcms.com/?utm_source=WordPress%2BPlugin%2BBrowser&utm_medium=link&utm_content=v0.4&utm_term=Author%2BURI&utm_campaign=WordPress%2BPlugin
+Author URI: http://www.liveeditorcms.com/file-manager?utm_source=WordPress%2BPlugin%2BBrowser&utm_medium=link&utm_content=v0.4&utm_term=Author%2BURI&utm_campaign=WordPress%2BPlugin
 
 Copyright (C) 2013 Clear Crystal Media, LLC. All rights reserved.
 

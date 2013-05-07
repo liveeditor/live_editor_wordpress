@@ -21,7 +21,7 @@ Upload, embed, and link to your files hosted on Live Editor directly in your Wor
 *  **Link up YouTube and Vimeo videos** to their source video files for easier retrieval and editing later.
 *  **Seamless integration with WordPress.** We've taken great care to build this WordPress plugin with the same visual style and functionality that you'd expect from WordPress. You'll forget that you're using an external service while you're authoring your content.
 
-**Note:** This plugin requires paid subscription to the [Live Editor File Manager](http://www.liveeditorcms.com/?utm_source=WordPress%2BPlugin%2BDirectory&utm_medium=readme&utm_campaign=WordPress%2BPlugin) service.
+**Note:** This plugin requires paid subscription to the [Live Editor File Manager](http://www.liveeditorcms.com/file-manager?utm_source=WordPress%2BPlugin%2BDirectory&utm_medium=readme&utm_campaign=WordPress%2BPlugin) service.
 
 == Installation ==
 
