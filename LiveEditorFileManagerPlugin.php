@@ -12,7 +12,8 @@ class LiveEditorFileManagerPlugin {
    */
   function __construct() {
     // Activation
-    register_activation_hook(__FILE__, array(&$this, "activate"));
+    $main_plugin_file = str_replace("LiveEditorFileManagerPlugin.php", "liveeditor.php", __FILE__);
+    register_activation_hook($main_plugin_file, array(&$this, "activate"));
 
     // Plugin settings
     add_action("admin_head", array(&$this, "admin_assets"));  // Load stylesheet and JavaScript needed for this plugin to run
