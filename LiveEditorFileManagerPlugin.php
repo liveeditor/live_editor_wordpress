@@ -102,23 +102,13 @@ class LiveEditorFileManagerPlugin {
    */
   function admin_assets() {
     $options = get_option(self::OPTIONS_KEY);
+    global $post_type;
 
     // Our main stylesheet
   ?>
     <link rel="stylesheet" type="text/css" href="<?php echo plugins_url('stylesheets/colorbox.css', __FILE__) ?>" />
     <link rel="stylesheet" type="text/css" href="<?php echo plugins_url('stylesheets/styles.css', __FILE__) ?>" />
   <?php
-
-    // Hide the default "Add Media" button if the admin has opted to do so.
-    if (array_key_exists("hide_add_media_buttons", $options) && $options["hide_add_media_buttons"]) {
-    ?>
-      <style type="text/css">
-        .insert-media.add_media.button {
-          display: none;
-        }
-      </style>
-    <?php
-    }
 
     // JavaScript
     wp_enqueue_script(
@@ -148,6 +138,32 @@ class LiveEditorFileManagerPlugin {
       "tinymce",
       self::VERSION
     );
+
+    // Add settings info to body tag so JS can pick it up
+    if (isset($options["subdomain_slug"]) && $options["subdomain_slug"]) {
+      ?>
+        <script>
+          jQuery(document).ready(function() {
+            var body = jQuery("body");
+            body.addClass("live-editor-activated");
+            body.attr("data-live-editor-activated", true);
+            body.attr("data-live-editor-subdomain", "<?php echo $options['subdomain_slug'] ?>");
+            body.attr("data-live-editor-admin-ajax-url", "<?php echo admin_url('admin-ajax.php') ?>");
+            body.attr("data-live-editor-post-type", '<?php echo $this->post_type($post_type) ?>');
+            body.attr("data-live-editor-target-domain", '<?php echo $this->url_base() ?>');
+            body.attr("data-live-editor-target-url", '<?php echo $this->full_url() ?>');
+            body.attr("data-live-editor-nonce-resources", "<?php echo wp_create_nonce('resources') ?>");
+            body.attr("data-live-editor-nonce-resources_new", "<?php echo wp_create_nonce('resources_new') ?>");
+            body.attr("data-live-editor-nonce-editor_code", "<?php echo wp_create_nonce('editor_code') ?>");
+
+            <?php if (array_key_exists("hide_add_media_buttons", $options) && $options["hide_add_media_buttons"]) : ?>
+              body.addClass("live-editor-hide-add-media-buttons");
+              body.attr("data-live-editor-hide-add-media-buttons", true);
+            <?php endif ?>
+          });
+        </script>
+      <?php
+    }
   }
 
   /**
@@ -296,9 +312,9 @@ class LiveEditorFileManagerPlugin {
     <input
       type="checkbox"
       name="<?php echo self::OPTIONS_KEY ?>[<?php echo $name ?>]"
-      <?php if ($options["hide_media_tab"]) { ?>
+      <?php if ($options["hide_media_tab"]) : ?>
         checked="checked"
-      <?php } ?>
+      <?php endif ?>
     />
   <?php
   }
@@ -358,11 +374,6 @@ class LiveEditorFileManagerPlugin {
         href="<?php echo admin_url("admin-ajax.php") ?>"
         class="button insert-live-editor-media"
         title="Live Editor File Manager"
-        data-nonce="<?php echo wp_create_nonce('resources') ?>"
-        data-post-type="<?php echo $this->post_type($post_type) ?>"
-        data-target-domain="<?php echo $this->url_base() ?>"
-        data-target-url="<?php echo $this->full_url() ?>"
-        data-editor-code-nonce="<?php echo wp_create_nonce('editor_code') ?>"
       >
         <i class="media icon"></i>
         Add Live Editor Media</a>
@@ -400,7 +411,8 @@ class LiveEditorFileManagerPlugin {
     // Default values for params
     global $params;
     $params = $this->request_params(
-      array("post_type", "wp_source", "search", "file_types", "collections", "page", "action", "import_success")
+      array("post_type", "wp_source", "search", "file_types", "collections", "page", "action", "import_success",
+            "post_format", "previewable")
     );
 
     try {

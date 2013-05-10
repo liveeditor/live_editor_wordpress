@@ -92,14 +92,15 @@ jQuery(function() {
 
     // Reusable variables/DOM queries
     media_button = jQuery("a.insert-live-editor-media"),
-    media_link = jQuery("#live-editor-file-manager-add-media-link");
+    media_link = jQuery("#live-editor-file-manager-add-media-link"),
+    body = jQuery("body");
 
 
   //-----------------------------------------------------------------
   // Modal window
 
   media_button.colorbox({
-    href: media_button.attr("href") + "?action=resources&_ajax_nonce=" + media_button.attr("data-nonce") + "&post_type=" + media_button.attr("data-post-type") + "&wp_source=" + encodeURIComponent(media_button.attr("data-target-url")),
+    href: media_button.attr("href") + "?action=resources&_ajax_nonce=" + body.attr("data-live-editor-nonce-resources") + "&post_type=" + body.attr("data-live-editor-post-type") + "&wp_source=" + encodeURIComponent(body.attr("data-live-editor-target-url")),
     fixed: true,
     height: "93%",
     width: "95%"
@@ -110,7 +111,7 @@ jQuery(function() {
     var $this = jQuery(this);
 
     jQuery.ajax({
-      url: $this.attr("href") + "?action=" + $this.attr("data-action") + "&_ajax_nonce=" + $this.attr("data-nonce") + "&post_type=" + $this.attr("data-post-type") + "&wp_source=" + encodeURIComponent($this.attr("data-target-url")),
+      url: $this.attr("href") + "&_ajax_nonce=" + body.attr("data-live-editor-nonce-" + $this.attr("data-nonce-name")) + "&post_type=" + body.attr("data-live-editor-post-type") + "&wp_source=" + encodeURIComponent(body.attr("data-live-editor-target-url")),
       type: "get",
       cache: false,
       success: function(data, status, xhr) {
@@ -212,8 +213,8 @@ jQuery(function() {
       data: {
         action: "editor_code",
         resource_id: $this.attr("data-file-id"),
-        _ajax_nonce: $this.attr("data-nonce"),
-        post_type: $this.attr("data-post-type")
+        _ajax_nonce: body.attr("data-live-editor-nonce-editor_code"),
+        post_type: body.attr("data-live-editor-post-type")
       },
       success: function(data, textStatus, jqXHR) {
         if (typeof tinymce === "undefined") {
@@ -232,6 +233,59 @@ jQuery(function() {
 
     e.preventDefault();
   });
+
+
+  //-----------------------------------------------------------------
+  // Post type editors
+
+  if (body.attr("data-live-editor-activated")) {
+    var image_post_type = jQuery("div.wp-format-image div.wp-format-media-holder");
+
+    image_post_type.after(
+      '<div class="live-editor wp-format-media-holder hide-if-no-js">' +
+        '<p><i class="live-editor post-type icon"></i></p>' +
+        '<a href="#" id="live-editor-image-post-type-link" class="wp-format-media-select">Select / Upload Image</a>' +
+      '</div>'
+    );
+
+    jQuery("#live-editor-image-post-type-link").colorbox({
+      href: media_button.attr("href") + "?action=resources&post_format=Image&previewable=true&_ajax_nonce=" + body.attr("data-live-editor-nonce-resources") + "&post_type=" + body.attr("data-live-editor-post-type") + "&wp_source=" + encodeURIComponent(body.attr("data-live-editor-target-url")),
+      fixed: true,
+      height: "93%",
+      width: "95%"
+    });
+
+    // Insert into post link
+    jQuery(document).on("click", "#cboxLoadedContent a.select-file", function(e) {
+      var $this = jQuery(this),
+          file_id = $this.attr("data-file-id"),
+          post_format = $this.attr("data-post-format");
+
+      jQuery.ajax({
+        type: "post",
+        url: $this.attr("href"),
+        data: {
+          action: "editor_code",
+          resource_id: $this.attr("data-file-id"),
+          _ajax_nonce: body.attr("data-live-editor-nonce-editor_code")
+        },
+        success: function(data, textStatus, jqXHR) {
+          switch (post_format) {
+            case "Image":
+              jQuery("#wp_format_image").text(String(data));
+              break;
+          }
+
+          jQuery("#cboxClose").click();
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          alert("There was an error retrieving the code to add to your content.");
+        }
+      });
+
+      e.preventDefault();
+    });
+  }
 
 
   //-----------------------------------------------------------------

@@ -1,11 +1,4 @@
-#wp-fullscreen-buttons #wp_fs_live_editor_media span.mce_live_editor_media {
-  background-image: url(../images/sprites/icons.png);
-  background-position: 2px 3px;
-}
-
-.insert-live-editor-media.button {
-  padding-left: 0.4em;
-}
+/* Icons */
 
 .icon {
   background: url(../images/sprites/icons.png) no-repeat;
@@ -26,6 +19,78 @@
     vertical-align: text-top;
     width: 15px;
   }
+
+  .icon.live-editor.post-type {
+    background-position: 0 -49px;
+    height: 30px;
+    width: 30px;
+  }
+
+
+/* Buttons */
+
+#wp-fullscreen-buttons #wp_fs_live_editor_media span.mce_live_editor_media {
+  background-image: url(../images/sprites/icons.png);
+  background-position: 2px 3px;
+}
+
+.insert-live-editor-media.button {
+  padding-left: 0.4em;
+}
+
+.live-editor-hide-add-media-buttons {}
+
+  .live-editor-hide-add-media-buttons .insert-media.add_media.button {
+    display: none;
+  }
+
+  .live-editor-hide-add-media-buttons .wp-format-media-holder {
+    display: none;
+  }
+
+    .live-editor-hide-add-media-buttons .live-editor.wp-format-media-holder {
+      display: block;
+    }
+
+
+/* Post types */
+
+.live-editor-activated {}
+
+  .live-editor-activated #wp_format_image {
+    max-width: 40%;
+  }
+
+    .live-editor-activated.live-editor-hide-add-media-buttons  #wp_format_image {
+      max-width: 50%;
+    }
+
+  .live-editor-activated .wp-format-media-holder {
+    margin-right: 23px;
+    max-width: 24%;
+  }
+
+    .live-editor-activated.live-editor-hide-add-media-buttons .wp-format-media-holder {
+      max-width: 40%;
+    }
+
+  .live-editor.wp-format-media-holder {
+    background-image: none;
+    margin-right: 0;
+    padding-top: 0;
+    text-align: center;
+  }
+
+#post-body-content.wp-format-image .insert-live-editor-media.button,
+#post-body-content.wp-format-video .insert-live-editor-media.button,
+#post-body-content.wp-format-audio .insert-live-editor-media.button,
+#post-body-content.wp-format-status .insert-live-editor-media.button,
+#post-body-content.wp-format-aside .insert-live-editor-media.button {
+  display: none;
+}
+
+
+/* Modal window */
 
 #cboxLoadedContent {}
 

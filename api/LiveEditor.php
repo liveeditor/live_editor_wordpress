@@ -93,7 +93,6 @@ class LiveEditor {
    */
   function get_files($params = array()) {
     $params = $this->clean_file_params($params);
-
     return $this->make_request("/resources.json", "GET", $params);
   }
 
@@ -102,7 +101,6 @@ class LiveEditor {
    */
   function get_files_count($params = array()) {
     $params = $this->clean_file_params($params);
-
     return $this->make_request("/resources/count.json", "GET", $params);
   }
 
@@ -116,6 +114,14 @@ class LiveEditor {
 
     if (array_key_exists("collections", $params)) {
       $params["collection_ids"] = $params["collections"];
+    }
+
+    if (array_key_exists("post_format", $params)) {
+      switch ($params["post_format"]) {
+        case "Image":
+          $params["resource_type_id"] = 1;
+          break;
+      }
     }
 
     return $params;

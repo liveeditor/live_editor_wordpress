@@ -12,6 +12,8 @@
   </div>
   <form id="files-form" action="<?php echo admin_url("admin-ajax.php") ?>" method="get">
     <input type="hidden" name="action" value="resources" />
+    <input type="hidden" name="file_type_id" value="<?php echo $params['file_type_id'] ?>" />
+    <input type="hidden" name="previewable" value="<?php echo $params['previewable'] ?>" />
     <input type="hidden" name="post_type" value="<?php echo $params['post_type'] ?>" />
     <input type="hidden" name="_ajax_nonce" value="<?php echo wp_create_nonce('resources') ?>" />
     <input type="hidden" name="wp_source" value="<?php $params['wp_source'] ?>" />
@@ -70,7 +72,11 @@
                 </div>
                 <h3><?php echo $file->title ?></h3>
                 <p>
-                  <?php echo insert_into_post_link($file, $params) ?>
+                  <?php if (array_key_exists("post_format", $params) && strlen($params["post_format"])) : ?>
+                    <?php echo select_post_format_link($file, $params) ?>
+                  <?php else : ?>
+                    <?php echo insert_into_post_link($file, $params) ?>
+                  <?php endif ?>
                 </p>
               </div>
 
@@ -102,26 +108,28 @@
             <input type="search" name="search" placeholder="Search" value="<?php echo $params['search'] ?>" class="search" />
           </p>
 
-          <h3>Show Types</h3>
-          <p>
-            <?php if (count($file_types)) : ?>
-              <?php foreach($file_types as $file_type) : ?>
-                <label>
-                  <input
-                    type="checkbox"
-                    name="file_types[]"
-                    value="<?php echo $file_type->id ?>"
-                    <?php if (!count($params["file_types"]) || array_search($file_type->id, $params["file_types"]) !== false) : ?>
-                      checked="checked"
-                    <?php endif ?>
-                  />
-                  <?php echo $file_type->name ?>
-                </label><br />
-              <?php endforeach ?>
-            <?php else : ?>
-              <p>There was an error loading file types. Please try again later.</p>
-            <?php endif ?>
-          </p>
+          <?php if (!array_key_exists("post_format", $params) || !strlen($params["post_format"])) : ?>
+            <h3>Show Types</h3>
+            <p>
+              <?php if (count($file_types)) : ?>
+                <?php foreach($file_types as $file_type) : ?>
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="file_types[]"
+                      value="<?php echo $file_type->id ?>"
+                      <?php if (!count($params["file_types"]) || array_search($file_type->id, $params["file_types"]) !== false) : ?>
+                        checked="checked"
+                      <?php endif ?>
+                    />
+                    <?php echo $file_type->name ?>
+                  </label><br />
+                <?php endforeach ?>
+              <?php else : ?>
+                <p>There was an error loading file types. Please try again later.</p>
+              <?php endif ?>
+            </p>
+          <?php endif ?>
 
           <h3>Show Collections</h3>
           <?php if (count($collections)) : ?>

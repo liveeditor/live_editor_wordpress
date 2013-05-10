@@ -15,23 +15,17 @@ function nav_active_class($sections) {
 <div class="media-frame-menu">
   <div class="media-menu">
     <a
-      href="<?php echo admin_url("admin-ajax.php") ?>"
+      href="<?php echo admin_url("admin-ajax.php") ?>?action=resources"
       class="media-menu-item <?php echo nav_active_class('resources') ?>"
-      data-action="resources"
-      data-nonce="<?php echo wp_create_nonce('resources') ?>"
-      data-post-type="<?php echo $params['post_type'] ?>"
-      data-target-url="<?php echo $params['wp_source'] ?>"
+      data-nonce-name="resources"
     >
       Select Existing File
     </a>
 
     <a
-      href="<?php echo admin_url("admin-ajax.php") ?>"
+      href="<?php echo admin_url("admin-ajax.php") ?>?action=resources_new"
       class="media-menu-item <?php echo nav_active_class(array('resources_new', 'resources_create')) ?>"
-      data-action="resources_new"
-      data-nonce="<?php echo wp_create_nonce('resources_new') ?>"
-      data-post-type="<?php echo $params["post_type"] ?>"
-      data-target-url="<?php echo $params['wp_source'] ?>"
+      data-nonce-name="resources_new"
     >
       New File
     </a>

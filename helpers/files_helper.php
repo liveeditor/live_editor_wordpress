@@ -57,19 +57,18 @@ function collections_nested_set($collections, $selected_collections) {
 }
 
 /**
- * Returns link markup for inserting link into post, but a "Processing file..." message if it's not ready.
+ * Returns link markup for embedding file into post, but a "Processing file..." message if it's not ready.
+ * This is for a generic "Insert into post" link for any file.
  */
 function insert_into_post_link($file, $params) {
   // If encoded and final, display link
   if ($file->final) {
     return
       '<a
-        href="' . admin_url("admin-ajax.php") . '"
+        href="' . admin_url("admin-ajax.php") . '?action=editor_code"
         class="insert-file modal-ignore"
         data-file-id="' . $file->id . '"
-        data-action="editor_code"
-        data-post-type="' . $params['post_type'] . '"
-        data-nonce="' . wp_create_nonce('editor_code') . '"
+        data-nonce-name="editor_code"
       >
         Insert into ' . $params["post_type"] . '
       </a>';
@@ -91,6 +90,29 @@ function next_page_link_class($current_page, $total_pages) {
  */
 function prev_page_link_class($current_page) {
   return $current_page == 1 ? "disabled" : "";
+}
+
+/**
+ * Returns link markup for embedding file into post, but a "Processing file..." message if it's not ready.
+ * This is a "Select [Post Type]" link for a specific post format like image, audio, video, etc.
+ */
+function select_post_format_link($file, $params) {
+  // If encoded and final, display link
+  if ($file->final) {
+    return
+      '<a
+        href="' . admin_url("admin-ajax.php") . '?action=editor_code"
+        class="select-file modal-ignore"
+        data-file-id="' . $file->id . '"
+        data-post-format="' . $params["post_format"] . '"
+        data-nonce-name="editor_code"
+      >
+        Select ' . $params["post_format"] . '
+      </a>';
+  }
+  else {
+    return '<em>Processing file&hellip; Please wait.</em>';
+  }
 }
 
 ?>
