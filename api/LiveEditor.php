@@ -121,6 +121,12 @@ class LiveEditor {
         case "Image":
           $params["resource_type_id"] = 1;
           break;
+        case "Video":
+          $params["resource_type_id"] = 2;
+          break;
+        case "Audio":
+          $params["resource_type_id"] = 5;
+          break;
       }
     }
 

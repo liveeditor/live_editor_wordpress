@@ -57,11 +57,15 @@
 
 .live-editor-activated {}
 
-  .live-editor-activated #wp_format_image {
+  .live-editor-activated #wp_format_image,
+  .live-editor-activated #wp_format_video,
+  .live-editor-activated #wp_format_audio {
     max-width: 40%;
   }
 
-    .live-editor-activated.live-editor-hide-add-media-buttons  #wp_format_image {
+    .live-editor-activated.live-editor-hide-add-media-buttons #wp_format_image,
+    .live-editor-activated.live-editor-hide-add-media-buttons #wp_format_video,
+    .live-editor-activated.live-editor-hide-add-media-buttons #wp_format_audio {
       max-width: 50%;
     }
 
