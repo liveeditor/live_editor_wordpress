@@ -31,7 +31,7 @@ if (is_admin() && !class_exists('LiveEditorFileManagerPlugin')) {
 
   // Instantiate the plugin class
   global $live_editor_file_manager_plugin;
-  $live_editor_file_manager_plugin = new LiveEditorFileManagerPlugin();
+  $live_editor_file_manager_plugin = new LiveEditorFileManagerPlugin(__FILE__);
 }
 
 ?>

@@ -10,9 +10,8 @@ class LiveEditorFileManagerPlugin {
   /**
    * Constructor.
    */
-  function __construct() {
+  function __construct($main_plugin_file) {
     // Activation
-    $main_plugin_file = str_replace("LiveEditorFileManagerPlugin.php", "liveeditor.php", __FILE__);
     register_activation_hook($main_plugin_file, array(&$this, "activate"));
 
     // Plugin settings
