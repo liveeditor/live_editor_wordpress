@@ -13,11 +13,11 @@
   <form id="files-form" action="<?php echo admin_url("admin-ajax.php") ?>" method="get">
     <input type="hidden" name="action" value="resources" />
     <input type="hidden" name="file_type_id" value="<?php echo $params['file_type_id'] ?>" />
-    <input type="hidden" name="previewable" value="<?php echo $params['previewable'] ?>" />
     <input type="hidden" name="post_type" value="<?php echo $params['post_type'] ?>" />
     <input type="hidden" name="_ajax_nonce" value="<?php echo wp_create_nonce('resources') ?>" />
     <input type="hidden" name="wp_source" value="<?php $params['wp_source'] ?>" />
     <input type="hidden" id="total-pages" value="<?php echo $total_pages ?>" />
+    <?php echo post_format_hidden_form_fields($params) ?>
 
     <div class="media-frame-content">
       <div class="attachments-browser">

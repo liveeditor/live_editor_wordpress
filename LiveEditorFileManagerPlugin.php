@@ -343,7 +343,7 @@ class LiveEditorFileManagerPlugin {
     check_ajax_referer("editor_code");
 
     global $params;
-    $params = $this->request_params(array("resource_id", "wp_source"));
+    $params = $this->request_params(array("resource_id"));
 
     // Calling `die()` stops WP from returning a `0` or `1` to indicate success with AJAX request
     die(file_get_contents($this->api_url("/resources/" . $params["resource_id"] . "/code")));
@@ -410,10 +410,7 @@ class LiveEditorFileManagerPlugin {
 
     // Default values for params
     global $params;
-    $params = $this->request_params(
-      array("post_type", "wp_source", "search", "file_types", "collections", "page", "action", "import_success",
-            "post_format", "previewable")
-    );
+    $params = $this->request_params(array("search", "file_types", "collections", "page", "action", "import_success"));
 
     try {
       $file_types   = $this->api()->get_file_types();
@@ -455,19 +452,27 @@ class LiveEditorFileManagerPlugin {
 
     // Default values for params
     global $params;
-    $params = $this->request_params(array("post_type", "wp_source", "action", "url"));
+    $params = $this->request_params(array("action", "url"));
 
     // Validate URL
     $file = $this->api()->create_file_import(array("resource[url]" => $params["url"]));
 
     if (array_key_exists("errors", $file) === false) {
       $index_params = array(
-        "action" => "resources",
-        "post_type" => $params["post_type"],
-        "_ajax_nonce" => wp_create_nonce("resources"),
-        "wp_source" => $params["wp_source"],
+        "action"         => "resources",
+        "post_type"      => $params["post_type"],
+        "_ajax_nonce"    => wp_create_nonce("resources"),
+        "wp_source"      => $params["wp_source"],
         "import_success" => true
       );
+
+      if (array_key_exists("post_format", $params) && strlen($params["post_format"])) {
+        $index_params["post_format"] = $params["post_format"];
+      }
+
+      if (array_key_exists("previewable", $params) && strlen($params["previewable"])) {
+        $index_params["previewable"] = $params["previewable"];
+      }
 
       header("Location: " . admin_url("admin-ajax.php") . "?" . http_build_query($index_params));
     }
@@ -491,7 +496,7 @@ class LiveEditorFileManagerPlugin {
 
     // Default values for params
     global $params;
-    $params = $this->request_params(array("post_type", "wp_source", "action", "url"));
+    $params = $this->request_params(array("action", "url"));
 
     global $active_tab;
     $active_tab = "upload-form";
@@ -642,21 +647,34 @@ class LiveEditorFileManagerPlugin {
   }
 
   /**
-   * Searches `$_GET` and `$_POST` arrays for given params.
+   * Helps search `$_GET` and `$_POST` arrays for a given param.
+   */
+  private function resolve_request_param($param) {
+    if (isset($_POST[$param])) {
+      return $_POST[$param];
+    }
+    elseif (isset($_GET[$param])) {
+      return $_GET[$param];
+    }
+    else {
+      return null;
+    }
+  }
+
+  /**
+   * Searches `$_GET` and `$_POST` arrays for given params. Automatically takes care of `post_type`, `post_format`,
+   * and `previewable` parameters.
    */
   private function request_params($params = array()) {
     $request_params = array();
 
+    $request_params["post_type"]   = $this->resolve_request_param("post_type");
+    $request_params["post_format"] = $this->resolve_request_param("post_format");
+    $request_params["previewable"] = $this->resolve_request_param("previewable");
+    $request_params["wp_source"]   = $this->resolve_request_param("wp_source");
+
     foreach ($params as $param) {
-      if (isset($_POST[$param])) {
-        $request_params[$param] = $_POST[$param];
-      }
-      elseif (isset($_GET[$param])) {
-        $request_params[$param] = $_GET[$param];
-      }
-      else {
-        $request_params[$param] = null;
-      }
+      $request_params[$param] = $this->resolve_request_param($param);
     }
 
     return $request_params;

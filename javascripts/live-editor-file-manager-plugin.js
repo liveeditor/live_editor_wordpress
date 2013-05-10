@@ -111,7 +111,7 @@ jQuery(function() {
     var $this = jQuery(this);
 
     jQuery.ajax({
-      url: $this.attr("href") + "&_ajax_nonce=" + body.attr("data-live-editor-nonce-" + $this.attr("data-nonce-name")) + "&post_type=" + body.attr("data-live-editor-post-type") + "&wp_source=" + encodeURIComponent(body.attr("data-live-editor-target-url")),
+      url: $this.attr("href") + "&_ajax_nonce=" + body.attr("data-live-editor-nonce-" + $this.attr("data-nonce-name")) + "&post_type=" + body.attr("data-live-editor-post-type") + "&wp_source=" + encodeURIComponent(body.attr("data-live-editor-target-url")) + ($this.attr("data-post-format") ? "&post_format=" + $this.attr("data-post-format") : "") + ($this.attr("data-previewable") ? "&previewable=" + $this.attr("data-previewable") : ""),
       type: "get",
       cache: false,
       success: function(data, status, xhr) {
