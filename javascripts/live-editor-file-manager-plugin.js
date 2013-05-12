@@ -257,8 +257,8 @@ jQuery(function() {
         width: "95%"
       });
 
-      // Insert into post link
-      jQuery(document).on("click", "#cboxLoadedContent a.select-file", function(e) {
+      // "Select [format]" link
+      jQuery(document).on("click", "#cboxLoadedContent a.select-" + format.toLowerCase(), function(e) {
         var $this = jQuery(this),
             file_id = $this.attr("data-file-id"),
             post_format = $this.attr("data-post-format");
@@ -272,7 +272,7 @@ jQuery(function() {
             _ajax_nonce: body.attr("data-live-editor-nonce-editor_code")
           },
           success: function(data, textStatus, jqXHR) {
-            jQuery("#wp_format_" + format).text(String(data));
+            jQuery("#wp_format_" + format).val(String(data));
             jQuery("#cboxClose").click();
           },
           error: function(jqXHR, textStatus, errorThrown) {
@@ -284,6 +284,7 @@ jQuery(function() {
       });
     };
 
+    // Add handlers for image, video, and audio post types
     add_post_format_handler("image");
     add_post_format_handler("video");
     add_post_format_handler("audio");
@@ -297,22 +298,35 @@ jQuery(function() {
     // e.data passed to this closure will contain ID of resource selected
     jQuery.receiveMessage(
       function(e) {
+        var response = e.data.split(","),
+            id = response[0];
+
         jQuery.ajax({
           type: "post",
           url: media_link.attr("href"),
           data: {
             action: "editor_code",
-            resource_id: e.data,
-            _ajax_nonce: media_link.attr("data-editor-code-nonce")
+            resource_id: id,
+            _ajax_nonce: body.attr("data-live-editor-nonce-editor_code")
           },
           success: function(data, textStatus, jqXHR) {
-            if (typeof tinymce === "undefined") {
-              jQuery("#content").insertAtCaret(String(data));
+            var code = String(data);
+
+            // If there is a comma in the response, then it's for a specific post format
+            if (response.length == 2) {
+              var format = response[1];
+              jQuery("#wp_format_" + format).val(code);
             }
+            // If there is just code in the response, then it's for the content editor
             else {
-              my_data = String(data);
-              window.liveEditorFileManagerPlugin.insertTinyMceContent(my_data);
+              if (typeof tinymce === "undefined") {
+                jQuery("#content").insertAtCaret(code);
+              }
+              else {
+                window.liveEditorFileManagerPlugin.insertTinyMceContent(code);
+              }
             }
+            
             jQuery("#cboxClose").click();
           },
           error: function(jqXHR, textStatus, errorThrown) {
@@ -320,7 +334,7 @@ jQuery(function() {
           }
         });
       },
-      media_link.attr("data-target-domain")
+      body.attr("data-live-editor-target-domain")
     );
   }
 

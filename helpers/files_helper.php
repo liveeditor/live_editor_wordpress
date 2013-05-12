@@ -153,7 +153,7 @@ function select_post_format_link($file, $params) {
     return
       '<a
         href="' . admin_url("admin-ajax.php") . '?action=editor_code"
-        class="select-file modal-ignore"
+        class="select-' . strtolower($params["post_format"]) . ' modal-ignore"
         data-file-id="' . $file->id . '"
         data-post-format="' . $params["post_format"] . '"
         data-nonce-name="editor_code"

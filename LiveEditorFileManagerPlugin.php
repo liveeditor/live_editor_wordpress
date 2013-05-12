@@ -413,7 +413,7 @@ class LiveEditorFileManagerPlugin {
     $params = $this->request_params(array("search", "file_types", "collections", "page", "action", "import_success"));
 
     try {
-      $file_types   = $this->api()->get_file_types();
+      $file_types = $this->api()->get_file_types();
 
       // File types are always there, so use them as a litmus test as to whether or not the API is working
       if (!count($file_types)) {
