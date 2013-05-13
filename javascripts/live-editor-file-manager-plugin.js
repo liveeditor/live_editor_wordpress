@@ -240,13 +240,15 @@ jQuery(function() {
 
   if (body.attr("data-live-editor-activated")) {
     var add_post_format_handler = function(format) {
-      var post_format_holder = jQuery("div.wp-format-" + format + " div.wp-format-media-holder"),
+      var post_format_holder = jQuery("div.wp-format-" + format + ".field div.wp-format-media-holder"),
           uppercase_format = format.charAt(0).toUpperCase() + format.slice(1);
 
       post_format_holder.after(
         '<div class="live-editor wp-format-media-holder hide-if-no-js">' +
-          '<p><i class="live-editor post-type icon"></i></p>' +
-          '<a href="#" id="live-editor-' + format + '-post-type-link" class="wp-format-media-select">Select / Upload ' + uppercase_format + '</a>' +
+          '<a href="#" id="live-editor-' + format + '-post-type-link" class="wp-format-media-select">' +
+            '<span><i class="live-editor post-type icon"></i></span>' +
+            'Select / Upload ' + uppercase_format +
+          '</a>' +
         '</div>'
       );
 
