@@ -215,39 +215,44 @@ class LiveEditorFileManagerPlugin {
 
       // Find Live Editor resources in content
       foreach ($domains as $domain) {
-        // Match Live Editor URLs
+        // Match Live Editor URLs based on domains
         $search = '/(href|src)="?(https?:?\/\/|\/\/)?' . str_replace(".", "\.", $domain->name) . '\//i';
-        if (preg_match_all($search, $post->post_content, &$matches, PREG_OFFSET_CAPTURE)) {
-          foreach ($matches[0] as $match) {
-            // Grab file ID from match
-            $file_id = substr($post->post_content, $match[1] + strlen($match[0]) + strlen("files/resources/"));
-            $file_id = substr($file_id, 0, strpos($file_id, "/"));
-            
-            // Hang onto this one for later
-            array_push($content_file_ids, $file_id);
-            
-            // See if this post is already associated with the file as a file usage
-            $file_usages = $this->api()->get_file_usages($file_id);
 
-            $usage_recorded = false;
-            foreach ($file_usages as $file_usage) {
-              if ($file_usage->usage->url == $post->guid) {
-                $usage_recorded = true;
-              }
-            }
+        // Post content
+        $content_file_ids = $this->search_and_create_resource_usages(
+          $search,
+          $post->post_content,
+          $post->post_title,
+          $post->guid,
+          $content_file_ids
+        );
 
-            // Add usage if it's not already recorded
-            if (!$usage_recorded) {
-              $external_url = array(
-                "external_url[title]" => strlen($post->post_title) ? $post->post_title : "WordPress Post",
-                "external_url[url]" => $post->guid,
-                "external_url[notes]" => "WordPress site."
-              );
+        // Image post format
+        $content_file_ids = $this->search_and_create_resource_usages(
+          $search,
+          stripcslashes($_POST["_format_image"]),
+          $post->post_title,
+          $post->guid,
+          $content_file_ids
+        );
 
-              $this->api()->create_external_url($file_id, $external_url);
-            }
-          }
-        }
+        // Video post format
+        $content_file_ids = $this->search_and_create_resource_usages(
+          $search,
+          stripcslashes($_POST["_format_video_embed"]),
+          $post->post_title,
+          $post->guid,
+          $content_file_ids
+        );
+
+        // Audio post_format
+        $content_file_ids = $this->search_and_create_resource_usages(
+          $search,
+          stripcslashes($_POST["_format_audio_embed"]),
+          $post->post_title,
+          $post->guid,
+          $content_file_ids
+        );
       }
 
       // Remove unused file usages
@@ -678,6 +683,47 @@ class LiveEditorFileManagerPlugin {
     }
 
     return $request_params;
+  }
+
+  /**
+   * Searches `$content` for Live Editor URLs and creates resource usages for them. Appends IDs of Live Editor
+   * resources to `$ids` and returns it.
+   */
+  private function search_and_create_resource_usages($search, $content, $title, $guid, $ids) {
+    // Search in post content
+    if (preg_match_all($search, $content, &$matches, PREG_OFFSET_CAPTURE)) {
+      foreach ($matches[0] as $match) {
+        // Grab file ID from match
+        $file_id = substr($content, $match[1] + strlen($match[0]) + strlen("files/resources/"));
+        $file_id = substr($file_id, 0, strpos($file_id, "/"));
+        
+        // Hang onto this one for later
+        array_push($ids, $file_id);
+        
+        // See if this post is already associated with the file as a file usage
+        $file_usages = $this->api()->get_file_usages($file_id);
+
+        $usage_recorded = false;
+        foreach ($file_usages as $file_usage) {
+          if ($file_usage->usage->url == $guid) {
+            $usage_recorded = true;
+          }
+        }
+
+        // Add usage if it's not already recorded
+        if (!$usage_recorded) {
+          $external_url = array(
+            "external_url[title]" => strlen($title) ? $title : "WordPress Post",
+            "external_url[url]" => $guid,
+            "external_url[notes]" => "WordPress site."
+          );
+
+          $this->api()->create_external_url($file_id, $external_url);
+        }
+      }
+    }
+
+    return $ids;
   }
 
   /**
