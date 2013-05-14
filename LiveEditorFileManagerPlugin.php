@@ -227,32 +227,38 @@ class LiveEditorFileManagerPlugin {
           $content_file_ids
         );
 
-        // Image post format
-        $content_file_ids = $this->search_and_create_resource_usages(
-          $search,
-          stripcslashes($_POST["_format_image"]),
-          $post->post_title,
-          $post->guid,
-          $content_file_ids
-        );
+        if (array_key_exists("_format_image", $_POST)) {
+          // Image post format
+          $content_file_ids = $this->search_and_create_resource_usages(
+            $search,
+            stripcslashes($_POST["_format_image"]),
+            $post->post_title,
+            $post->guid,
+            $content_file_ids
+          );
+        }
 
-        // Video post format
-        $content_file_ids = $this->search_and_create_resource_usages(
-          $search,
-          stripcslashes($_POST["_format_video_embed"]),
-          $post->post_title,
-          $post->guid,
-          $content_file_ids
-        );
+        if (array_key_exists("_format_video_embed", $_POST)) {
+          // Video post format
+          $content_file_ids = $this->search_and_create_resource_usages(
+            $search,
+            stripcslashes($_POST["_format_video_embed"]),
+            $post->post_title,
+            $post->guid,
+            $content_file_ids
+          );
+        }
 
-        // Audio post_format
-        $content_file_ids = $this->search_and_create_resource_usages(
-          $search,
-          stripcslashes($_POST["_format_audio_embed"]),
-          $post->post_title,
-          $post->guid,
-          $content_file_ids
-        );
+        if (array_key_exists("_format_audio_embed", $_POST)) {
+          // Audio post_format
+          $content_file_ids = $this->search_and_create_resource_usages(
+            $search,
+            stripcslashes($_POST["_format_audio_embed"]),
+            $post->post_title,
+            $post->guid,
+            $content_file_ids
+          );
+        }
       }
 
       // Remove unused file usages
