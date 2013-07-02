@@ -111,7 +111,7 @@ jQuery(function() {
     var $this = jQuery(this);
 
     jQuery.ajax({
-      url: $this.attr("href") + "&_ajax_nonce=" + body.attr("data-live-editor-nonce-" + $this.attr("data-nonce-name")) + "&post_type=" + body.attr("data-live-editor-post-type") + "&wp_source=" + encodeURIComponent(body.attr("data-live-editor-target-url")) + ($this.attr("data-post-format") ? "&post_format=" + $this.attr("data-post-format") : "") + ($this.attr("data-previewable") ? "&previewable=" + $this.attr("data-previewable") : ""),
+      url: $this.attr("href") + "&_ajax_nonce=" + body.attr("data-live-editor-nonce-" + $this.attr("data-nonce-name")) + "&post_type=" + body.attr("data-live-editor-post-type") + "&wp_source=" + encodeURIComponent(body.attr("data-live-editor-target-url")) + ($this.attr("data-previewable") ? "&previewable=" + $this.attr("data-previewable") : ""),
       type: "get",
       cache: false,
       success: function(data, status, xhr) {
@@ -236,99 +236,14 @@ jQuery(function() {
 
 
   //-----------------------------------------------------------------
-  // Post type editors
-
-  if (body.attr("data-live-editor-activated")) {
-    // Reusable functions
-    var
-      // Generates post type preview
-      generate_post_type_preview = function(format, code) {
-        var preview_container = jQuery("#" + format.toLowerCase() + "-preview");
-
-        format = format.toLowerCase();
-
-        // If preview container is already present, replace its inner HTML with the new code
-        if (preview_container.length) {
-          preview_container.html(code);
-        }
-        // If preview container isn't yet present, create it with embed code filled in
-        else {
-          jQuery("div.wp-format-" + format + ".field:first").prepend(
-            '<div id="' + format + '-preview" class="wp-format-media-preview">' +
-              code +
-            '</div>'
-          );
-        }
-      },
-
-      // Add post format handler for a given format (e.g., "image", "video", "audio")
-      add_post_format_handler = function(format) {
-        var post_format_holder = jQuery("div.wp-format-" + format + ".field div.wp-format-media-holder"),
-            uppercase_format = format.charAt(0).toUpperCase() + format.slice(1);
-
-        post_format_holder.after(
-          '<div class="live-editor wp-format-media-holder hide-if-no-js">' +
-            '<a href="#" id="live-editor-' + format + '-post-type-link" class="wp-format-media-select">' +
-              '<span><i class="live-editor post-type icon"></i></span>' +
-              'Select / Upload ' + uppercase_format +
-            '</a>' +
-          '</div>'
-        );
-
-        jQuery("#live-editor-" + format + "-post-type-link").colorbox({
-          href: media_button.attr("href") + "?action=resources&post_format=" + uppercase_format + (format == "image" ? "&previewable=true" : "") + "&_ajax_nonce=" + body.attr("data-live-editor-nonce-resources") + "&post_type=" + body.attr("data-live-editor-post-type") + "&wp_source=" + encodeURIComponent(body.attr("data-live-editor-target-url")),
-          fixed: true,
-          height: "93%",
-          width: "95%"
-        });
-
-        // "Select [format]" link
-        jQuery(document).on("click", "#cboxLoadedContent a.select-" + format.toLowerCase(), function(e) {
-          var $this = jQuery(this),
-              file_id = $this.attr("data-file-id"),
-              post_format = $this.attr("data-post-format");
-
-          jQuery.ajax({
-            type: "post",
-            url: $this.attr("href"),
-            data: {
-              action: "editor_code",
-              resource_id: $this.attr("data-file-id"),
-              _ajax_nonce: body.attr("data-live-editor-nonce-editor_code")
-            },
-            success: function(data, textStatus, jqXHR) {
-              var code = String(data);
-
-              jQuery("#wp_format_" + format).val(code);
-              generate_post_type_preview(post_format, code);
-              jQuery("#cboxClose").click();
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-              alert("There was an error retrieving the code to add to your content.");
-            }
-          });
-
-          e.preventDefault();
-        });
-      };
-
-    // Add handlers for image, video, and audio post types
-    add_post_format_handler("image");
-    add_post_format_handler("video");
-    add_post_format_handler("audio");
-  }
-
-
-  //-----------------------------------------------------------------
   // Receive resource requests from Live Editor domain
 
   if (media_link.length) {
     // e.data passed to this closure will contain ID of resource selected
     jQuery.receiveMessage(
       function(e) {
-        // Response will be either just an ID for the Live Editor resource or a comma-delimited list of ID and format
-        var response = e.data.split(","),
-            id = response[0];
+        // Response will be an ID for the Live Editor resource
+        var id = e.data;
 
         jQuery.ajax({
           type: "post",
@@ -341,23 +256,11 @@ jQuery(function() {
           success: function(data, textStatus, jqXHR) {
             var code = String(data);
 
-            // If there is a comma in the response, then it's for a specific post format
-            if (response.length == 2) {
-              var format = response[1];
-
-              // Fill in embed code field
-              jQuery("#wp_format_" + format).val(code);
-              // Fill in preview
-              generate_post_type_preview(format, code);
+            if (typeof tinymce === "undefined") {
+              jQuery("#content").insertAtCaret(code);
             }
-            // If there is just and ID in the response, then it's for the content editor
             else {
-              if (typeof tinymce === "undefined") {
-                jQuery("#content").insertAtCaret(code);
-              }
-              else {
-                window.liveEditorFileManagerPlugin.insertTinyMceContent(code);
-              }
+              window.liveEditorFileManagerPlugin.insertTinyMceContent(code);
             }
             
             jQuery("#cboxClose").click();

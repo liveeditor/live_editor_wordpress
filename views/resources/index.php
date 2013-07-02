@@ -17,7 +17,6 @@
     <input type="hidden" name="_ajax_nonce" value="<?php echo wp_create_nonce('resources') ?>" />
     <input type="hidden" name="wp_source" value="<?php $params['wp_source'] ?>" />
     <input type="hidden" id="total-pages" value="<?php echo $total_pages ?>" />
-    <?php echo post_format_hidden_form_fields($params) ?>
 
     <div class="media-frame-content">
       <div class="attachments-browser">
@@ -72,11 +71,7 @@
                 </div>
                 <h3><?php echo $file->title ?></h3>
                 <p>
-                  <?php if (array_key_exists("post_format", $params) && strlen($params["post_format"])) : ?>
-                    <?php echo select_post_format_link($file, $params) ?>
-                  <?php else : ?>
-                    <?php echo insert_into_post_link($file, $params) ?>
-                  <?php endif ?>
+                  <?php echo insert_into_post_link($file, $params) ?>
                 </p>
               </div>
 
@@ -108,28 +103,26 @@
             <input type="search" name="search" placeholder="Search" value="<?php echo $params['search'] ?>" class="search" />
           </p>
 
-          <?php if (!array_key_exists("post_format", $params) || !strlen($params["post_format"])) : ?>
-            <h3>Show Types</h3>
-            <p>
-              <?php if (count($file_types)) : ?>
-                <?php foreach($file_types as $file_type) : ?>
-                  <label>
-                    <input
-                      type="checkbox"
-                      name="file_types[]"
-                      value="<?php echo $file_type->id ?>"
-                      <?php if (!count($params["file_types"]) || array_search($file_type->id, $params["file_types"]) !== false) : ?>
-                        checked="checked"
-                      <?php endif ?>
-                    />
-                    <?php echo $file_type->name ?>
-                  </label><br />
-                <?php endforeach ?>
-              <?php else : ?>
-                <p>There was an error loading file types. Please try again later.</p>
-              <?php endif ?>
-            </p>
-          <?php endif ?>
+          <h3>Show Types</h3>
+          <p>
+            <?php if (count($file_types)) : ?>
+              <?php foreach($file_types as $file_type) : ?>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="file_types[]"
+                    value="<?php echo $file_type->id ?>"
+                    <?php if (!count($params["file_types"]) || array_search($file_type->id, $params["file_types"]) !== false) : ?>
+                      checked="checked"
+                    <?php endif ?>
+                  />
+                  <?php echo $file_type->name ?>
+                </label><br />
+              <?php endforeach ?>
+            <?php else : ?>
+              <p>There was an error loading file types. Please try again later.</p>
+            <?php endif ?>
+          </p>
 
           <h3>Show Collections</h3>
           <?php if (count($collections)) : ?>

@@ -19,7 +19,7 @@
   <div class="media-frame-content">
     <div id="upload-form">
       <iframe
-        src="<?php echo $this->api_url("/admin/resources/uploads/new?post_type=" . $params['post_type'] . "&amp;wp_source=" . urlencode($params['wp_source']) . "&amp;wp_nonce=" . urlencode(wp_create_nonce('editor_code')) . post_format_url_params($params), true, "/wp/v1") ?>"
+        src="<?php echo $this->api_url("/admin/resources/uploads/new?post_type=" . $params['post_type'] . "&amp;wp_source=" . urlencode($params['wp_source']) . "&amp;wp_nonce=" . urlencode(wp_create_nonce('editor_code')), true, "/wp/v1") ?>"
         width="100%"
         height="300"
       ></iframe>
@@ -31,7 +31,6 @@
         <input type="hidden" name="post_type" value="<?php echo $params['post_type'] ?>" />
         <input type="hidden" name="_ajax_nonce" value="<?php echo wp_create_nonce('resources_imports_create') ?>" />
         <input type="hidden" name="wp_source" value="<?php $params['wp_source'] ?>" />
-        <?php echo post_format_hidden_form_fields($params) ?>
 
         <?php if (isset($flash["error"])) : ?>
           <div class="error">

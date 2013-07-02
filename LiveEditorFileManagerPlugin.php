@@ -226,39 +226,6 @@ class LiveEditorFileManagerPlugin {
           $post->guid,
           $content_file_ids
         );
-
-        if (array_key_exists("_format_image", $_POST)) {
-          // Image post format
-          $content_file_ids = $this->search_and_create_resource_usages(
-            $search,
-            stripcslashes($_POST["_format_image"]),
-            $post->post_title,
-            $post->guid,
-            $content_file_ids
-          );
-        }
-
-        if (array_key_exists("_format_video_embed", $_POST)) {
-          // Video post format
-          $content_file_ids = $this->search_and_create_resource_usages(
-            $search,
-            stripcslashes($_POST["_format_video_embed"]),
-            $post->post_title,
-            $post->guid,
-            $content_file_ids
-          );
-        }
-
-        if (array_key_exists("_format_audio_embed", $_POST)) {
-          // Audio post_format
-          $content_file_ids = $this->search_and_create_resource_usages(
-            $search,
-            stripcslashes($_POST["_format_audio_embed"]),
-            $post->post_title,
-            $post->guid,
-            $content_file_ids
-          );
-        }
       }
 
       // Remove unused file usages
@@ -475,14 +442,6 @@ class LiveEditorFileManagerPlugin {
         "import_success" => true
       );
 
-      if (array_key_exists("post_format", $params) && strlen($params["post_format"])) {
-        $index_params["post_format"] = $params["post_format"];
-      }
-
-      if (array_key_exists("previewable", $params) && strlen($params["previewable"])) {
-        $index_params["previewable"] = $params["previewable"];
-      }
-
       header("Location: " . admin_url("admin-ajax.php") . "?" . http_build_query($index_params));
     }
     // Validation fails, show form with error
@@ -671,15 +630,13 @@ class LiveEditorFileManagerPlugin {
   }
 
   /**
-   * Searches `$_GET` and `$_POST` arrays for given params. Automatically takes care of `post_type`, `post_format`,
-   * and `previewable` parameters.
+   * Searches `$_GET` and `$_POST` arrays for given params. Automatically takes care of `post_type` and `wp_source`
+   * parameters.
    */
   private function request_params($params = array()) {
     $request_params = array();
 
     $request_params["post_type"]   = $this->resolve_request_param("post_type");
-    $request_params["post_format"] = $this->resolve_request_param("post_format");
-    $request_params["previewable"] = $this->resolve_request_param("previewable");
     $request_params["wp_source"]   = $this->resolve_request_param("wp_source");
 
     foreach ($params as $param) {
@@ -751,8 +708,8 @@ class LiveEditorFileManagerPlugin {
    */
   private function valid_settings() {
     return array(
-      array("id" => "subdomain_slug",     "type" => "text"),
-      array("id" => "hide_media_tab",     "type" => "check_box"),
+      array("id" => "subdomain_slug",         "type" => "text"),
+      array("id" => "hide_media_tab",         "type" => "check_box"),
       array("id" => "hide_add_media_buttons", "type" => "check_box")
     );
   }
