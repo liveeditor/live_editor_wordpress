@@ -28,8 +28,8 @@ class LiveEditor {
   /**
    * Posts a new file usage record as an external URL.
    */
-  function create_external_url($file_id, $external_url) {
-    return $this->make_request("/resources/" . $file_id . "/external-urls.json", "POST", $external_url);
+  function create_file_external_url($file_id, $file_usage) {
+    return $this->make_request("/resources/" . $file_id . "/external-urls.json", "POST", $file_usage);
   }
 
   /**
@@ -84,7 +84,7 @@ class LiveEditor {
   /**
    * Returns array of files associated with a given URL.
    */
-  function get_file_usages_for_url($url) {
+  function get_external_urls_for_url($url) {
     return $this->make_request("/external-urls.json?url=" . urlencode($url), "GET");
   }
 
@@ -150,11 +150,16 @@ class LiveEditor {
     $options[CURLOPT_USERAGENT] = $this->user_agent;
     $options[CURLOPT_SSL_VERIFYPEER] = false; // TODO: Figure out a better fix for this
 
-    if ($method == 'POST' || $method == "DELETE") {
-      $options[CURLOPT_POST] = true;
-    }
-    else if ($method == 'PUT') {
-      $options[CURLOPT_PUT] = true;
+    switch ($method) {
+      case "POST":
+        $options[CURLOPT_POST] = true;
+        break;
+      case "PUT":
+        $options[CURLOPT_PUT] = true;
+        break;
+      case "DELETE":
+        $options[CURLOPT_CUSTOMREQUEST] = "DELETE";
+        break;
     }
 
     if (!empty($params)) {
@@ -170,21 +175,18 @@ class LiveEditor {
 
     curl_setopt_array($ch, $options);
 
-    if ($method == "DELETE") {
-      curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-    }
-
-    $result = curl_exec($ch);
-    $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $result   = curl_exec($ch);
+    $status   = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $error    = curl_error($ch);
+    $error_no = curl_errno($ch);
+    curl_close($ch);
 
     if ($result === false) {
-      throw new Exception(curl_error($ch), curl_errno($ch));
+      throw new Exception($error, $error_no);
     }
     elseif ($status == 401) {
       throw new Exception("Unauthorized", 401);
     }
-
-    curl_close($ch);
 
     $result = json_decode($result);
 
@@ -203,7 +205,7 @@ class LiveEditor {
 
     $url  = $this->url_base() . $path;
     $url .= strpos($path, "?") ? $amp : "?";
-    $url .= $amp . "user_api_key=" . urlencode($this->user_api_key);
+    $url .= "user_api_key=" . urlencode($this->user_api_key);
 
     return $url;
   }

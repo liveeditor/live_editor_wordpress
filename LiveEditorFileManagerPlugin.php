@@ -2,7 +2,7 @@
 require_once "api/LiveEditor.php";
 
 class LiveEditorFileManagerPlugin {
-  const VERSION        = "0.4";
+  const VERSION        = "0.5";
   const MINIMUM_WP     = "3.5";
   const OPTIONS_KEY    = "live_editor_file_manager_plugin_options"; // Used as key in WP options table
   const FILES_PER_PAGE = 15;
@@ -208,7 +208,7 @@ class LiveEditorFileManagerPlugin {
       array_push($domains, $subdomain);
 
       // Get current file usages before we mess with them so we can delete unused ones later
-      $external_urls = $this->api()->get_file_usages_for_url($post->guid);
+      $external_urls = $this->api()->get_external_urls_for_url($post->guid);
 
       // Store file IDs for use later
       $content_file_ids = array();
@@ -263,11 +263,10 @@ class LiveEditorFileManagerPlugin {
 
       // Remove unused file usages
       foreach ($external_urls as $external_url) {
-        $file_id = $external_url->resource_usage->resource_id;
-        $external_url_id = $external_url->id;
-
-        if (array_search($file_id, $content_file_ids) === false) {
-          $this->api()->delete_file_external_url($file_id, $external_url_id);
+        foreach ($external_url->resource_usages as $file_usage) {
+          if (array_search($file_usage->resource_id, $content_file_ids) === false) {
+            $this->api()->delete_file_external_url($file_usage->resource_id, $file_usage->id);
+          }
         }
       }
     }
@@ -284,14 +283,13 @@ class LiveEditorFileManagerPlugin {
     // Only perform this action if the plugin has an API key registered
     if (isset($current_user->live_editor_user_api_key)) {
       // Get current file usages
-      $external_urls = $this->api()->get_file_usages_for_url($post->guid);
+      $external_urls = $this->api()->get_external_urls_for_url($post->guid);
 
       // Delete external URLs
       foreach ($external_urls as $external_url) {
-        $file_id = $external_url->resource_usage->resource_id;
-        $external_url_id = $external_url->id;
-
-        $this->api()->delete_file_external_url($file_id, $external_url_id);
+        foreach($external_url->resource_usages as $file_usage) {
+          $this->api()->delete_file_external_url($file_usage->resource_id, $file_usage->id);
+        }
       }
     }
   }
@@ -718,13 +716,13 @@ class LiveEditorFileManagerPlugin {
 
         // Add usage if it's not already recorded
         if (!$usage_recorded) {
-          $external_url = array(
-            "external_url[title]" => strlen($title) ? $title : "WordPress Post",
-            "external_url[url]" => $guid,
-            "external_url[notes]" => "WordPress site."
+          $file_usage = array(
+            "resource_usage[title]" => strlen($title) ? $title : "WordPress Post",
+            "resource_usage[usage_attributes][url]" => $guid,
+            "resource_usage[notes]" => "WordPress site."
           );
 
-          $this->api()->create_external_url($file_id, $external_url);
+          $this->api()->create_file_external_url($file_id, $file_usage);
         }
       }
     }

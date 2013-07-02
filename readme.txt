@@ -3,7 +3,7 @@ Contributors: liveeditor
 Tags: images, files, photos, video, audio, media, admin, image, photo, upload, digital asset management, documents
 Requires at least: 3.5
 Tested up to: 3.5.1
-Stable tag: 0.4
+Stable tag: 0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -76,6 +76,8 @@ You can log in to Live Editor and generate your own API key in your user profile
 
 We've designed and tested the Live Editor WordPress plugin for use with WordPress version 3.5 or newer.
 
+PHP 5+ with the [cURL extension](http://www.php.net/manual/en/curl.installation.php) is required.
+
 For browser support, see our [system requirements](http://www.liveeditorcms.com/help/system-requirements?utm_source=WordPress%2BPlugin%2BDirectory&utm_medium=readme&utm_campaign=WordPress%2BPlugin).
 
 You also need an active Live Editor account.
@@ -134,3 +136,8 @@ We're honored to be asked about Live Editor's longevity because we know that it 
 
 = 0.4 =
 *  Added "Hide WordPress Add Media Buttons" option and separated it from the "Hide WordPress Media Section from Menu" option.
+
+= 0.5 =
+*  Integration with new WordPress 3.6 post types (beta).
+*  Fixes issue where file usage deletions were not processing on WordPress 3.5.2.
+*  Change to work with new breaking Live Editor API changes.
