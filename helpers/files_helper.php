@@ -86,84 +86,10 @@ function next_page_link_class($current_page, $total_pages) {
 }
 
 /**
- * Returns hidden fields for `post_format` and `previewable` if their params are present.
- */
-function post_format_hidden_form_fields($params) {
-  $fields = "";
-
-  if (array_key_exists("post_format", $params) && strlen($params["post_format"])) {
-    $fields = '<input type="hidden" name="post_format" value="' . $params["post_format"] . '" />';
-  }
-
-  if (array_key_exists("previewable", $params) && strlen($params["previewable"])) {
-    $fields .= '<input type="hidden" name="previewable" value="' . $params["previewable"] . '" />';
-  }
-
-  return $fields;
-}
-
-/**
- * Returns `data-post-format` and `data-previewable` attributes if their params are present.
- */
-function post_format_link_attributes($params) {
-  $attributes = "";
-
-  if (array_key_exists("post_format", $params) && strlen($params["post_format"])) {
-    $attributes = ' data-post-format="' . $params["post_format"] . '"';
-  }
-
-  if (array_key_exists("previewable", $params) && strlen($params["previewable"])) {
-    $attributes .= ' data-previewable="' . $params["previewable"] . '"';
-  }
-
-  return $attributes;
-}
-
-/**
- * Returns URL params for `post_format` and `previewable` if their params are present.
- */
-function post_format_url_params($params) {
-  $url_params = "";
-
-  if (array_key_exists("post_format", $params) && strlen($params["post_format"])) {
-    $url_params = '&amp;post_format=' . $params["post_format"];
-  }
-
-  if (array_key_exists("previewable", $params) && strlen($params["previewable"])) {
-    $url_params .= '&amp;previewable=' . $params["previewable"];
-  }
-
-  return $url_params;
-}
-
-/**
  * Returns `disabled` class if there is no previous page.
  */
 function prev_page_link_class($current_page) {
   return $current_page == 1 ? "disabled" : "";
-}
-
-/**
- * Returns link markup for embedding file into post, but a "Processing file..." message if it's not ready.
- * This is a "Select [Post Type]" link for a specific post format like image, audio, video, etc.
- */
-function select_post_format_link($file, $params) {
-  // If encoded and final, display link
-  if ($file->final) {
-    return
-      '<a
-        href="' . admin_url("admin-ajax.php") . '?action=editor_code"
-        class="select-' . strtolower($params["post_format"]) . ' modal-ignore"
-        data-file-id="' . $file->id . '"
-        data-post-format="' . $params["post_format"] . '"
-        data-nonce-name="editor_code"
-      >
-        Select ' . $params["post_format"] . '
-      </a>';
-  }
-  else {
-    return '<em>Processing file&hellip; Please wait.</em>';
-  }
 }
 
 ?>

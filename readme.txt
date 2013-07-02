@@ -138,6 +138,5 @@ We're honored to be asked about Live Editor's longevity because we know that it 
 *  Added "Hide WordPress Add Media Buttons" option and separated it from the "Hide WordPress Media Section from Menu" option.
 
 = 0.5 =
-*  Integration with new WordPress 3.6 post types (beta).
 *  Fixes issue where file usage deletions were not processing on WordPress 3.5.2.
 *  Change to work with new breaking Live Editor API changes.

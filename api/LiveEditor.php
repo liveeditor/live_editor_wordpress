@@ -116,20 +116,6 @@ class LiveEditor {
       $params["collection_ids"] = $params["collections"];
     }
 
-    if (array_key_exists("post_format", $params)) {
-      switch ($params["post_format"]) {
-        case "Image":
-          $params["resource_type_id"] = 1;
-          break;
-        case "Video":
-          $params["resource_type_id"] = 2;
-          break;
-        case "Audio":
-          $params["resource_type_id"] = 5;
-          break;
-      }
-    }
-
     return $params;
   }
 
