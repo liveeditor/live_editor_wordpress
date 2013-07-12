@@ -3,7 +3,7 @@
 Plugin Name: Live Editor File Manager
 Plugin URI: http://www.liveeditorcms.com/wordpress?utm_source=WordPress%2BPlugin%2BBrowser&utm_medium=link&utm_content=v0.3&utm_term=Plugin%2BHomepage&utm_campaign=WordPress%2BPlugin
 Description: Allows you to add Files from your Live Editor account into WordPress posts and pages.
-Version: 0.4
+Version: 0.5
 Author: Live Editor
 Author URI: http://www.liveeditorcms.com/file-manager?utm_source=WordPress%2BPlugin%2BBrowser&utm_medium=link&utm_content=v0.4&utm_term=Author%2BURI&utm_campaign=WordPress%2BPlugin
 
