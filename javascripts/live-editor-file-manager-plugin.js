@@ -278,11 +278,21 @@ jQuery(function() {
   //-----------------------------------------------------------------
   // File uploader tabs
 
-  // Init file uploader tabs
+  // Init file uploader tabs and load lazy images
   jQuery(document).bind('cbox_complete', function() {
     if (jQuery("#cboxLoadedContent div.media-router").length) {
       toggleMediaRouterContent();
     }
+
+    setTimeout(
+      function() {
+        jQuery("img.lazy").each(function() {
+          var $this = jQuery(this);
+          $this.attr("src", $this.attr("data-src"));
+        });
+      },
+      0.1
+    );
   });
 
   // Click file uploader tabs

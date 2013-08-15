@@ -58,7 +58,7 @@
 
           <?php if (count($files)) : ?>
             <?php $resource_counter = 0 ?>
-            <?php foreach($files as $file) : ?>
+            <?php foreach ($files as $file) : ?>
               <?php if ($resource_counter == 0) : ?>
                 <div class="row">
               <?php endif ?>
@@ -66,7 +66,14 @@
               <div class="file">
                 <div class="thumb">
                   <span class="thumbnail">
-                    <img src="<?php echo $this->api()->get_file_url($file->id, 'medium') ?>" alt="Thumbnail" />
+                    <img
+                      src="<?php echo $this->asset_url('/missing/resource_file/processing_medium.png') ?>"
+                      class="lazy"
+                      data-src="<?php echo $thumbnail_urls[$file->id] ?>"
+                      alt="Thumbnail"
+                      width="260"
+                      height="180"
+                    />
                   </span>
                 </div>
                 <h3><?php echo $file->title ?></h3>
@@ -88,6 +95,7 @@
                 }
               ?>
             <?php endforeach ?>
+
             <?php if ($resource_counter > 0) : ?>
               </div>
             <?php endif ?>

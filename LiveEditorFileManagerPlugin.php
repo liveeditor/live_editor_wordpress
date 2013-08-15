@@ -2,7 +2,7 @@
 require_once "api/LiveEditor.php";
 
 class LiveEditorFileManagerPlugin {
-  const VERSION        = "0.5.1";
+  const VERSION        = "0.5.2";
   const MINIMUM_WP     = "3.5";
   const OPTIONS_KEY    = "live_editor_file_manager_plugin_options"; // Used as key in WP options table
   const FILES_PER_PAGE = 15;
@@ -388,21 +388,32 @@ class LiveEditorFileManagerPlugin {
     global $params;
     $params = $this->request_params(array("search", "file_types", "collections", "page", "action", "import_success"));
 
+    $api = $this->api();
+    $api->get_file_types('file_types');
+    $api->get_collections('collections');
+    $api->get_files($params, 'files');
+    $api->get_files_count($params, 'files_count');
+
     try {
-      $file_types = $this->api()->get_file_types();
+      $results = $api->execute_requests();
 
       // File types are always there, so use them as a litmus test as to whether or not the API is working
-      if (!count($file_types)) {
+      if (!count($results['file_types'])) {
         require_once "views/exceptions/unauthorized.php";
         die();
       }
 
-      $collections  = $this->api()->get_collections();
-      $files        = $this->api()->get_files($params);
-      $files_count  = $this->api()->get_files_count($params);
+      // Continue with processing
+      $file_types   = $results['file_types'];
+      $collections  = $results['collections'];
+      $files        = $results['files'];
+      $files_count  = $results['files_count'];
       $current_page = $params["page"] ? $params["page"] : 1;
       $per_page     = self::FILES_PER_PAGE;
       $total_pages  = floor($files_count / $per_page) + ($files_count % $per_page ? 1 : 0);
+
+      // Thumbnail URLs need to be grabbed asynchronously from the Live Editor API
+      $thumbnail_urls = $api->get_file_thumbnail_urls($files);
     }
     catch (Exception $e) {
       if ($e->getCode() == 401) {
@@ -600,6 +611,14 @@ class LiveEditorFileManagerPlugin {
     }
 
     return $url;
+  }
+
+  /**
+   * Returns URL for retrieving static assets from Live Editor.
+   */
+  private function asset_url($path) {
+    $options = get_option(self::OPTIONS_KEY);
+    return getenv('PHP_LIVE_EDITOR_API_PROTOCOL') . $options["subdomain_slug"] . "." . getenv('PHP_LIVE_EDITOR_API_DOMAIN') . "/assets" . $path;
   }
 
   /**
