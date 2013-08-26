@@ -67,7 +67,7 @@
                 <div class="thumb">
                   <span class="thumbnail">
                     <img
-                      src="<?php echo $this->asset_url('/missing/resource_file/processing_medium.png') ?>"
+                      src=""
                       class="lazy"
                       data-src="<?php echo $thumbnail_urls[$file->id] ?>"
                       alt="Thumbnail"
