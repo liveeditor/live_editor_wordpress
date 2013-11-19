@@ -7,7 +7,7 @@ Version: 0.5.3
 Author: Live Editor
 Author URI: http://www.liveeditorcms.com/file-manager?utm_source=WordPress%2BPlugin%2BBrowser&utm_medium=link&utm_content=v0.5.3&utm_term=Author%2BURI&utm_campaign=WordPress%2BPlugin
 
-Copyright (C) 2013 Clear Crystal Media, LLC. All rights reserved.
+Copyright (C) 2013 Minimal Orange, LLC. All rights reserved.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
