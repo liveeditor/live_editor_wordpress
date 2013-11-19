@@ -2,8 +2,8 @@
 Contributors: liveeditor
 Tags: images, files, photos, video, audio, media, admin, image, photo, upload, digital asset management, documents
 Requires at least: 3.5
-Tested up to: 3.6
-Stable tag: 0.5.3
+Tested up to: 3.7.1
+Stable tag: 0.5.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,7 +21,7 @@ Upload, embed, and link to your files hosted on Live Editor directly in your Wor
 *  **Link up YouTube and Vimeo videos** to their source video files for easier retrieval and editing later.
 *  **Seamless integration with WordPress.** We've taken great care to build this WordPress plugin with the same visual style and functionality that you'd expect from WordPress. You'll forget that you're using an external service while you're authoring your content.
 
-**Note:** This plugin requires paid subscription to the [Live Editor File Manager](http://www.liveeditorcms.com/file-manager?utm_source=WordPress%2BPlugin%2BDirectory&utm_medium=readme&utm_content=v0.5.3&utm_campaign=WordPress%2BPlugin) service.
+**Note:** This plugin requires paid subscription to the [Live Editor File Manager](http://www.liveeditorcms.com/file-manager?utm_source=WordPress%2BPlugin%2BDirectory&utm_medium=readme&utm_content=v0.5.4&utm_campaign=WordPress%2BPlugin) service.
 
 == Installation ==
 
@@ -78,7 +78,7 @@ We've designed and tested the Live Editor WordPress plugin for use with WordPres
 
 PHP 5+ with the [cURL extension](http://www.php.net/manual/en/curl.installation.php) is required.
 
-For browser support, see our [system requirements](http://www.liveeditorcms.com/help/system-requirements?utm_source=WordPress%2BPlugin%2BDirectory&utm_medium=readme&utm_content=v0.5.3&utm_campaign=WordPress%2BPlugin).
+For browser support, see our [system requirements](http://www.liveeditorcms.com/help/system-requirements?utm_source=WordPress%2BPlugin%2BDirectory&utm_medium=readme&utm_content=v0.5.4&utm_campaign=WordPress%2BPlugin).
 
 You also need an active Live Editor account.
 
@@ -149,3 +149,7 @@ We're honored to be asked about Live Editor's longevity because we know that it 
 
 = 0.5.3 =
 *  Remove default file thumbnail URLs to accommodate new server-side asset hosting on Live Editor servers.
+
+= 0.5.4 =
+*  Performance improvement on files listing screen.
+*  Support for upcoming file drafts feature will filter out all files that are not "published."
