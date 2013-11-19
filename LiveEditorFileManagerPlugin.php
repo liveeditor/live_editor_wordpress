@@ -392,7 +392,6 @@ class LiveEditorFileManagerPlugin {
     $api->get_file_types('file_types');
     $api->get_collections('collections');
     $api->get_files($params, 'files');
-    $api->get_files_count($params, 'files_count');
 
     try {
       $results = $api->execute_requests();
@@ -407,7 +406,7 @@ class LiveEditorFileManagerPlugin {
       $file_types   = $results['file_types'];
       $collections  = $results['collections'];
       $files        = $results['files'];
-      $files_count  = $results['files_count'];
+      $files_count  = count($results['files']);
       $current_page = $params["page"] ? $params["page"] : 1;
       $per_page     = self::FILES_PER_PAGE;
       $total_pages  = floor($files_count / $per_page) + ($files_count % $per_page ? 1 : 0);
@@ -655,8 +654,8 @@ class LiveEditorFileManagerPlugin {
   private function request_params($params = array()) {
     $request_params = array();
 
-    $request_params["post_type"]   = $this->resolve_request_param("post_type");
-    $request_params["wp_source"]   = $this->resolve_request_param("wp_source");
+    $request_params["post_type"] = $this->resolve_request_param("post_type");
+    $request_params["wp_source"] = $this->resolve_request_param("wp_source");
 
     foreach ($params as $param) {
       $request_params[$param] = $this->resolve_request_param($param);
