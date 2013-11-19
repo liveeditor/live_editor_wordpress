@@ -137,19 +137,19 @@ We're honored to be asked about Live Editor's longevity because we know that it 
 = 0.4 =
 *  Added "Hide WordPress Add Media Buttons" option and separated it from the "Hide WordPress Media Section from Menu" option.
 
-= 0.5 =
+= 0.5 (July 12, 2013) =
 *  Fixes issue where file usage deletions were not processing on WordPress 3.5.2.
 *  Change to work with new breaking Live Editor API changes.
 
-= 0.5.1 =
+= 0.5.1 (August 14, 2013) =
 *  Tested WordPress 3.6 compatibility.
 
-= 0.5.2 =
+= 0.5.2 (August 15, 2013) =
 *  Significant performance improvements when calling Live Editor API.
 
-= 0.5.3 =
+= 0.5.3 (August 26, 2013) =
 *  Remove default file thumbnail URLs to accommodate new server-side asset hosting on Live Editor servers.
 
-= 0.5.4 =
+= 0.5.4 (November 19, 2013) =
 *  Performance improvement on files listing screen.
 *  Support for upcoming file drafts feature will filter out all files that are not "published."
