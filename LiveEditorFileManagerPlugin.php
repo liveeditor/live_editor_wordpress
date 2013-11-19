@@ -388,6 +388,9 @@ class LiveEditorFileManagerPlugin {
     global $params;
     $params = $this->request_params(array("search", "file_types", "collections", "page", "action", "import_success"));
 
+    // We only want published files for the WordPress plugin
+    $params['published'] = true;
+
     $api = $this->api();
     $api->get_file_types('file_types');
     $api->get_collections('collections');
