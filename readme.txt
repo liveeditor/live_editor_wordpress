@@ -2,7 +2,7 @@
 Contributors: liveeditor
 Tags: images, files, photos, video, audio, media, admin, image, photo, upload, digital asset management, documents
 Requires at least: 3.5
-Tested up to: 3.6
+Tested up to: 3.7.1
 Stable tag: 0.5.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -137,24 +137,24 @@ We're honored to be asked about Live Editor's longevity because we know that it 
 = 0.4 =
 *  Added "Hide WordPress Add Media Buttons" option and separated it from the "Hide WordPress Media Section from Menu" option.
 
-= 0.5 =
+= 0.5 (July 12, 2013) =
 *  Fixes issue where file usage deletions were not processing on WordPress 3.5.2.
 *  Change to work with new breaking Live Editor API changes.
 
-= 0.5.1 =
+= 0.5.1 (August 14, 2013) =
 *  Tested WordPress 3.6 compatibility.
 
-= 0.5.2 =
+= 0.5.2 (August 15, 2013) =
 *  Significant performance improvements when calling Live Editor API.
 
-= 0.5.3 =
+= 0.5.3 (August 26, 2013) =
 *  Remove default file thumbnail URLs to accommodate new server-side asset hosting on Live Editor servers.
 
-= 0.5.4 =
+= 0.5.4 (November 19, 2013) =
 *  Improve performance: remove unnecessary API call on index screen.
 *  Rebranded: we're now Minimal Orange, LLC.
 *  Add query param for upcoming Live Editor feature.
 
-= 0.5.5 =
+= 0.5.5 (December 5, 2013) =
 *  Fix PHP Fatal error: Call-time pass-by-reference has been removed
  
