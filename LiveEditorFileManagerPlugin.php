@@ -12,28 +12,28 @@ class LiveEditorFileManagerPlugin {
    */
   function __construct($main_plugin_file) {
     // Activation
-    register_activation_hook($main_plugin_file, array(&$this, "activate"));
+    register_activation_hook($main_plugin_file, array($this, "activate"));
 
     // Plugin settings
-    add_action("admin_head", array(&$this, "admin_assets"));  // Load stylesheet and JavaScript needed for this plugin to run
-    add_action("admin_init", array(&$this, "admin_init"));    // Initialize settings that are configurable through admin
-    add_action("admin_menu", array(&$this, "settings_menu")); // Add settings menu to WP menu
+    add_action("admin_head", array($this, "admin_assets"));  // Load stylesheet and JavaScript needed for this plugin to run
+    add_action("admin_init", array($this, "admin_init"));    // Initialize settings that are configurable through admin
+    add_action("admin_menu", array($this, "settings_menu")); // Add settings menu to WP menu
     
     // User API key in admin user profile
-    add_action("show_user_profile", array(&$this, "user_preferences"));            // Adds user API key field to user preferences
-    add_action("personal_options_update", array(&$this, "save_personal_options")); // Saves user API key in WP database
+    add_action("show_user_profile", array($this, "user_preferences"));            // Adds user API key field to user preferences
+    add_action("personal_options_update", array($this, "save_personal_options")); // Saves user API key in WP database
     
     // Using Live Editor within WordPress editors
-    add_action("admin_menu", array(&$this, "hide_media_tab"));                                 // Hide Media tab if the settings call for it
-    add_action("wp_ajax_resources", array(&$this, "resources"));                               // Add resources page for AJAX to call
-    add_action("wp_ajax_resources_new", array(&$this, "resources_new"));                       // Add resources/new page for AJAX to call
-    add_action("wp_ajax_resources_imports_create", array(&$this, "resources_imports_create")); // Create resource action for AJAX to call
-    add_action("wp_ajax_editor_code", array(&$this, "editor_code"));                           // Add editor code insertion page for AJAX to call
-    add_action("media_buttons", array(&$this, "media_button"));                                // Adds Live Editor media button
-    add_action("wp_fullscreen_buttons", array(&$this, "media_button_fullscreen"));             // Adds Live Editor media button to fullscreen editor
-    add_action("publish_post", array(&$this, "create_resource_usages"));                       // Adds usage record for newly-published post
-    add_action("publish_page", array(&$this, "create_resource_usages"));                       // Adds usage record for newly-published page
-    add_action("wp_trash_post", array(&$this, "delete_resource_usages"));                      // Deletes usages records for trashed post or page
+    add_action("admin_menu", array($this, "hide_media_tab"));                                 // Hide Media tab if the settings call for it
+    add_action("wp_ajax_resources", array($this, "resources"));                               // Add resources page for AJAX to call
+    add_action("wp_ajax_resources_new", array($this, "resources_new"));                       // Add resources/new page for AJAX to call
+    add_action("wp_ajax_resources_imports_create", array($this, "resources_imports_create")); // Create resource action for AJAX to call
+    add_action("wp_ajax_editor_code", array($this, "editor_code"));                           // Add editor code insertion page for AJAX to call
+    add_action("media_buttons", array($this, "media_button"));                                // Adds Live Editor media button
+    add_action("wp_fullscreen_buttons", array($this, "media_button_fullscreen"));             // Adds Live Editor media button to fullscreen editor
+    add_action("publish_post", array($this, "create_resource_usages"));                       // Adds usage record for newly-published post
+    add_action("publish_page", array($this, "create_resource_usages"));                       // Adds usage record for newly-published page
+    add_action("wp_trash_post", array($this, "delete_resource_usages"));                      // Deletes usages records for trashed post or page
   }
 
   /**
@@ -58,13 +58,13 @@ class LiveEditorFileManagerPlugin {
    */
   function admin_init() {
     // Handles post data and validation
-    register_setting("live_editor_file_manager_settings", self::OPTIONS_KEY, array(&$this, "validate_settings"));
+    register_setting("live_editor_file_manager_settings", self::OPTIONS_KEY, array($this, "validate_settings"));
 
     // Main settings section within the group
     add_settings_section(
       "live_editor_file_manager_main_settings_section",
       "Main Settings",
-      array(&$this, "settings_section_callback"),
+      array($this, "settings_section_callback"),
       "live_editor_file_manager_settings_section"
     );
 
@@ -72,7 +72,7 @@ class LiveEditorFileManagerPlugin {
     add_settings_field(
       "subdomain_slug",
       "Account Subdomain",
-      array(&$this, "display_subdomain_slug_text_field"),
+      array($this, "display_subdomain_slug_text_field"),
       "live_editor_file_manager_settings_section",
       "live_editor_file_manager_main_settings_section",
       array("name" => "subdomain_slug")
@@ -81,7 +81,7 @@ class LiveEditorFileManagerPlugin {
     add_settings_field(
       "hide_media_tab",
       "Hide WordPress <em>Media</em> Section from Menu",
-      array(&$this, "display_hide_media_tab_check_box"),
+      array($this, "display_hide_media_tab_check_box"),
       "live_editor_file_manager_settings_section",
       "live_editor_file_manager_main_settings_section",
       array("name" => "hide_media_tab")
@@ -90,7 +90,7 @@ class LiveEditorFileManagerPlugin {
     add_settings_field(
       "hide_add_media_buttons",
       "Hide WordPress <em>Add Media</em> Buttons",
-      array(&$this, "display_hide_add_media_buttons_check_box"),
+      array($this, "display_hide_add_media_buttons_check_box"),
       "live_editor_file_manager_settings_section",
       "live_editor_file_manager_main_settings_section",
       array("name" => "hide_add_media_buttons")
@@ -501,7 +501,7 @@ class LiveEditorFileManagerPlugin {
       "File Manager",
       "manage_options",
       "live-editor-file-manager",
-      array(&$this, "config_page")
+      array($this, "config_page")
     );
   }
 
@@ -673,7 +673,7 @@ class LiveEditorFileManagerPlugin {
    */
   private function search_and_create_resource_usages($search, $content, $title, $guid, $ids) {
     // Search in post content
-    if (preg_match_all($search, $content, &$matches, PREG_OFFSET_CAPTURE)) {
+    if (preg_match_all($search, $content, $matches, PREG_OFFSET_CAPTURE)) {
       foreach ($matches[0] as $match) {
         // Grab file ID from match
         $file_id = substr($content, $match[1] + strlen($match[0]) + strlen("files/resources/"));
