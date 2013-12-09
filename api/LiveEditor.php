@@ -206,6 +206,20 @@ class LiveEditor {
   }
 
   /**
+   * Returns count of files based on search params.
+   */
+  function get_files_count($params = array(), $enqueue_key = null) {
+    $params = $this->clean_file_params($params);
+
+    if ($enqueue_key) {
+      $this->enqueue_request($enqueue_key, "/resources/count.json", "GET", $params);
+    }
+    else {
+      return $this->make_request("/resources/count.json", "GET", $params);
+    }
+  }
+
+  /**
    * Cleans up file query params.
    */
   private function clean_file_params($params) {
