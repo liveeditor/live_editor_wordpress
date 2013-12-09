@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: Live Editor File Manager
-Plugin URI: http://www.liveeditorcms.com/wordpress?utm_source=WordPress%2BPlugin%2BBrowser&utm_medium=link&utm_content=v0.5.5&utm_term=Plugin%2BHomepage&utm_campaign=WordPress%2BPlugin
+Plugin URI: http://www.liveeditorcms.com/wordpress?utm_source=WordPress%2BPlugin%2BBrowser&utm_medium=link&utm_content=v0.5.6&utm_term=Plugin%2BHomepage&utm_campaign=WordPress%2BPlugin
 Description: Allows you to add Files from your Live Editor account into WordPress posts and pages.
-Version: 0.5.5
+Version: 0.5.6
 Author: Live Editor
-Author URI: http://www.liveeditorcms.com/file-manager?utm_source=WordPress%2BPlugin%2BBrowser&utm_medium=link&utm_content=v0.5.5&utm_term=Author%2BURI&utm_campaign=WordPress%2BPlugin
+Author URI: http://www.liveeditorcms.com/file-manager?utm_source=WordPress%2BPlugin%2BBrowser&utm_medium=link&utm_content=v0.5.6&utm_term=Author%2BURI&utm_campaign=WordPress%2BPlugin
 
 Copyright (C) 2013 Minimal Orange, LLC. All rights reserved.
 
