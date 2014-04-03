@@ -344,16 +344,39 @@ class LiveEditorFileManagerPlugin {
     global $post_type;
 
     if (isset($options["subdomain_slug"]) && $options["subdomain_slug"]) {
-    ?>
-      <a
-        id="live-editor-file-manager-add-media-link"
-        href="<?php echo admin_url("admin-ajax.php") ?>"
-        class="button insert-live-editor-media"
-        title="Live Editor File Manager"
-      >
-        <i class="media icon"></i>
-        Add Live Editor Media</a>
-    <?php
+      // Markup for button depends on WordPress version
+      switch (get_bloginfo('version')) {
+        // < WordPress 3.8
+        case '3.5':
+        case '3.5.1':
+        case '3.5.2':
+        case '3.6':
+        case '3.6.1':
+        case '3.7':
+        case '3.6.1':
+        ?>
+          <a
+            id="live-editor-file-manager-add-media-link"
+            href="<?php echo admin_url("admin-ajax.php") ?>"
+            class="button insert-live-editor-media"
+            title="Live Editor File Manager"
+          >
+            <i class="media icon"></i>
+            Add Live Editor Media</a>
+        <?php
+        // >= WordPress 3.8
+        default:
+        ?>
+          <a
+            id="live-editor-file-manager-add-media-link"
+            href="<?php echo admin_url("admin-ajax.php") ?>"
+            class="button insert-live-editor-media add_media"
+            title="Live Editor File Manager"
+          >
+            <span class="wp-media-buttons-icon le-media-buttons-icon"></span>
+            Add Live Editor Media</a>
+      <?php
+      }
     }
   }
 

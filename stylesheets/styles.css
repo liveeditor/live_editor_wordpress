@@ -26,6 +26,10 @@
     width: 30px;
   }
 
+span.le-media-buttons-icon:before {
+  color: #ADC44F;
+}
+
 
 /* Buttons */
 
