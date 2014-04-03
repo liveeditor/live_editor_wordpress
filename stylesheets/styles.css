@@ -9,7 +9,8 @@
   .icon.live-editor {
     background-position: 0 -25px;
     height: 24px;
-    vertical-align: text-top;
+    margin-top: -5px;
+    vertical-align: middle;
     width: 24px;
   }
 
