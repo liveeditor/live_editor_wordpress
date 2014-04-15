@@ -75,39 +75,75 @@ jQuery(function() {
   //-----------------------------------------------------------------
   // Functions/variables
 
-  // Reusable functions
   var
+    // Reusable variables/DOM queries
+    media_button = jQuery("a.insert-live-editor-media"),
+    media_link = jQuery("#live-editor-file-manager-add-media-link"),
+    body = jQuery("body"),
+
+    // Reusable functions
     toggleMediaRouterContent = function() {
-      jQuery("#cboxLoadedContent div.media-router a").each(function() {
+      jQuery("#live-editor-modal-window div.media-router a").each(function() {
         var $this = jQuery(this);
 
         if ($this.hasClass("active")) {
-          jQuery("#cboxLoadedContent " + $this.attr("href")).show();
+          jQuery("#live-editor-modal-window " + $this.attr("href")).show();
         }
         else {
-          jQuery("#cboxLoadedContent " + $this.attr("href")).hide();
+          jQuery("#live-editor-modal-window " + $this.attr("href")).hide();
         }
       });
     },
 
-    // Reusable variables/DOM queries
-    media_button = jQuery("a.insert-live-editor-media"),
-    media_link = jQuery("#live-editor-file-manager-add-media-link"),
-    body = jQuery("body");
+    closeModalWindow = function() {
+      body.css("overflow", "auto");
+      jQuery("#live-editor-modal-window").remove();
+    };
 
 
   //-----------------------------------------------------------------
   // Modal window
 
-  media_button.colorbox({
-    href: media_button.attr("href") + "?action=resources&_ajax_nonce=" + body.attr("data-live-editor-nonce-resources") + "&post_type=" + body.attr("data-live-editor-post-type") + "&wp_source=" + encodeURIComponent(body.attr("data-live-editor-target-url")),
-    fixed: true,
-    height: "93%",
-    width: "95%"
+  // Open modal window on click of "Add Live Editor Media" button
+  media_button.click(function(e) {
+    var media_window = jQuery.ajax({
+      url: media_button.attr("href") + "?action=resources&_ajax_nonce=" + body.attr("data-live-editor-nonce-resources") + "&post_type=" + body.attr("data-live-editor-post-type") + "&wp_source=" + encodeURIComponent(body.attr("data-live-editor-target-url")),
+      type: "get",
+      cache: false,
+      success: function(data, status, xhr) {
+        jQuery(data).appendTo("body");
+        body.css("overflow", "hidden");
+
+        jQuery(document).on("keyup.live_editor_modal_esc_key", function(e) {
+          if (e.which == 27) {
+            closeModalWindow();
+            jQuery(document).unbind("keyup.live_editor_modal_esc_key");
+          }
+        });
+
+        jQuery(document).trigger({ type: "live_editor_modal_complete" });
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        alert("There was an error loading Live Editor File Manager. Please reload the page and try again.");
+      }
+    });
+
+    e.preventDefault();
+  });
+
+  // Modal window close button
+  jQuery(document).on("click", "#live-editor-modal-window-close", function(e) {
+    closeModalWindow();
+    e.preventDefault();
+  });
+
+  // Modal window backdrop
+  jQuery(document).on("click", "#live-editor-modal-backdrop", function() {
+    closeModalWindow();
   });
 
   // Clicking links within lightbox
-  jQuery(document).on("click", "#cboxLoadedContent a:not(.modal-ignore)", function(e) {
+  jQuery(document).on("click", "#live-editor-modal-window a:not(.modal-ignore)", function(e) {
     var $this = jQuery(this);
 
     jQuery.ajax({
@@ -115,13 +151,10 @@ jQuery(function() {
       type: "get",
       cache: false,
       success: function(data, status, xhr) {
-        var loaded_content = jQuery("#cboxLoadedContent");
-
+        var loaded_content = jQuery("#live-editor-modal-window");
         loaded_content.html(jQuery(data));
         loaded_content.scrollTop(0);
-        jQuery(document).trigger({
-          type: "cbox_complete"
-        });
+        jQuery(document).trigger({ type: "live_editor_modal_complete" });
       },
       error: function(jqXHR, textStatus, errorThrown) {
         alert("There was an error loading the link you clicked. Please try reloading the page and try again.");
@@ -132,7 +165,7 @@ jQuery(function() {
   });
 
   // Submitting forms within lightbox
-  jQuery(document).on("submit", "#cboxLoadedContent form:not(.modal-ignore)", function(e) {
+  jQuery(document).on("submit", "#live-editor-modal-window form:not(.modal-ignore)", function(e) {
     var $this = jQuery(this);
 
     jQuery.ajax({
@@ -141,13 +174,10 @@ jQuery(function() {
       data: $this.serialize(),
       cache: false,
       success: function(data, status, xhr) {
-        var loaded_content = jQuery("#cboxLoadedContent");
-
+        var loaded_content = jQuery("#live-editor-modal-window");
         loaded_content.html(jQuery(data));
         loaded_content.scrollTop(0);
-        jQuery(document).trigger({
-          type: "cbox_complete"
-        });
+        jQuery(document).trigger({ type: "live_editor_modal_complete" });
       },
       error: function(jqXHR, textStatus, errorThrown) {
         alert("There was an error loading the form submission. Please try reloading the page and try again.");
@@ -158,13 +188,13 @@ jQuery(function() {
   });
 
   // Attachment browser pagination
-  jQuery(document).on("click", "#cboxLoadedContent div.attachments-browser span.pagination-links a.first-page", function(e) {
+  jQuery(document).on("click", "#live-editor-modal-window div.attachments-browser span.pagination-links a.first-page", function(e) {
     jQuery("#current-page").val(1);
     jQuery("#files-form").submit();
     e.preventDefault();
   });
 
-  jQuery(document).on("click", "#cboxLoadedContent div.attachments-browser span.pagination-links a.prev-page", function(e) {
+  jQuery(document).on("click", "#live-editor-modal-window div.attachments-browser span.pagination-links a.prev-page", function(e) {
     var $this = jQuery(this),
         current_page = jQuery("#current-page");
 
@@ -177,7 +207,7 @@ jQuery(function() {
     e.preventDefault();
   });
 
-  jQuery(document).on("click", "#cboxLoadedContent div.attachments-browser span.pagination-links a.next-page", function(e) {
+  jQuery(document).on("click", "#live-editor-modal-window div.attachments-browser span.pagination-links a.next-page", function(e) {
     var $this = jQuery(this),
         current_page = jQuery("#current-page"),
         total_pages = jQuery("#total-pages").val();
@@ -191,7 +221,7 @@ jQuery(function() {
     e.preventDefault();
   });
 
-  jQuery(document).on("click", "#cboxLoadedContent div.attachments-browser span.pagination-links a.last-page", function(e) {
+  jQuery(document).on("click", "#live-editor-modal-window div.attachments-browser span.pagination-links a.last-page", function(e) {
     var $this = jQuery(this),
         current_page = jQuery("#current-page"),
         total_pages = jQuery("#total-pages").val();
@@ -203,7 +233,7 @@ jQuery(function() {
   });
 
   // Insert into post link
-  jQuery(document).on("click", "#cboxLoadedContent a.insert-file", function(e) {
+  jQuery(document).on("click", "#live-editor-modal-window a.insert-file", function(e) {
     var $this = jQuery(this),
         file_id = $this.attr("data-file-id");
 
@@ -224,7 +254,7 @@ jQuery(function() {
           var my_data = String(data);
           window.liveEditorFileManagerPlugin.insertTinyMceContent(my_data);
         }
-        jQuery("#cboxClose").click();
+        jQuery("#live-editor-modal-window-close").click();
       },
       error: function(jqXHR, textStatus, errorThrown) {
         alert("There was an error retrieving the code to add to your content.");
@@ -263,7 +293,7 @@ jQuery(function() {
               window.liveEditorFileManagerPlugin.insertTinyMceContent(code);
             }
             
-            jQuery("#cboxClose").click();
+            jQuery("#live-editor-modal-window-close").click();
           },
           error: function(jqXHR, textStatus, errorThrown) {
             alert("There was an error retrieving the code to add to your content.");
@@ -279,8 +309,8 @@ jQuery(function() {
   // File uploader tabs
 
   // Init file uploader tabs and load lazy images
-  jQuery(document).bind('cbox_complete', function() {
-    if (jQuery("#cboxLoadedContent div.media-router").length) {
+  jQuery(document).bind('live_editor_modal_complete', function() {
+    if (jQuery("#live-editor-modal-window div.media-router").length) {
       toggleMediaRouterContent();
     }
 
@@ -296,9 +326,9 @@ jQuery(function() {
   });
 
   // Click file uploader tabs
-  jQuery(document).on("click", "#cboxLoadedContent div.media-router a", function(e) {
+  jQuery(document).on("click", "#live-editor-modal-window div.media-router a", function(e) {
     // Handle tabs
-    jQuery("#cboxLoadedContent div.media-router a").removeClass("active");
+    jQuery("#live-editor-modal-window div.media-router a").removeClass("active");
     jQuery(this).addClass("active");
     toggleMediaRouterContent();
 

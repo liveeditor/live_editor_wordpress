@@ -52,121 +52,141 @@ span.le-media-buttons-icon:before {
 
 /* Modal window */
 
-#cboxLoadedContent {}
+#live-editor-modal-window {}
 
-  #cboxLoadedContent .media-frame .media-frame-content .media-toolbar input {
+  #live-editor-modal-window .media-frame .media-frame-content .media-toolbar input {
     padding: 3px;
   }
 
-  #cboxLoadedContent #files {
+  .attachments-browser.live-editor-attachments-browser {
+    height: auto;
+    padding-bottom: 61px;
+  }
+
+  @media screen and (min-width: 641px) {
+    .attachments-browser.live-editor-attachments-browser {
+      height: 100%;
+    }
+  }
+
+  #live-editor-modal-window #files {
     overflow-y: auto;
     padding: 0 20px 20px;
   }
 
-    #cboxLoadedContent #files .row {
+    #live-editor-modal-window #files .row {
       overflow: hidden;
     }
 
-      #cboxLoadedContent #files .row .file {
-           -moz-box-sizing: border-box;
-            -ms-box-sizing: border-box;
-             -o-box-sizing: border-box;
-        -webkit-box-sizing: border-box;
-                box-sizing: border-box;
-        display: block;
-        float: left;
-        margin: 0 0.5% 20px;
+    #live-editor-modal-window #files .row .file {
+         -moz-box-sizing: border-box;
+          -ms-box-sizing: border-box;
+           -o-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+              box-sizing: border-box;
+      display: block;
+      margin: 0 0.5% 20px;
+      overflow: hidden;
+    }
+
+      #live-editor-modal-window #files .row .file .thumb {
+        display: table;
         overflow: hidden;
-        width: 32%;
+        width: 100%;
+        /* IE hacks */
+        #position: relative;
       }
 
-        #cboxLoadedContent #files .row .file .thumb {
-          display: table;
-          overflow: hidden;
-          width: 100%;
-          /* IE hacks */
-          #position: relative;
+        #live-editor-modal-window #files .row .file .thumb .thumbnail {
+          border: 1px solid #ddd;
+             -moz-border-radius: 4px;
+              -ms-border-radius: 4px;
+               -o-border-radius: 4px;
+          -webkit-border-radius: 4px;
+                  border-radius: 4px;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
+          display: table-cell;
+          padding: 4px;
+          outline: 0;
+          text-align: center;
         }
 
-          #cboxLoadedContent #files .row .file .thumb .thumbnail {
-            border: 1px solid #ddd;
-               -moz-border-radius: 4px;
-                -ms-border-radius: 4px;
-                 -o-border-radius: 4px;
-            -webkit-border-radius: 4px;
-                    border-radius: 4px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
-            display: table-cell;
-            height: 180px;
-            margin: auto;
-            padding: 4px;
-            outline: 0;
-            text-align: center;
-               -moz-transition: all 0.2s ease-in-out;
-                -ms-transition: all 0.2s ease-in-out;
-                 -o-transition: all 0.2s ease-in-out;
-            -webkit-transition: all 0.2s ease-in-out;
-                    transition: all 0.2s ease-in-out;
+          #live-editor-modal-window #files .row .file .thumb .thumbnail img {
+            display: block;
+            height: auto;
+            margin-right: auto;
+            margin-left: auto;
+            max-height: 180px;
+            max-width: 260px;
             vertical-align: middle;
             width: 100%;
-            /* IE hacks */
-            #position: absolute;
-            #top: 50%;
           }
 
-            #cboxLoadedContent #files .row .file .thumb .thumbnail img {
-              display: block;
-              height: auto;
-              margin-right: auto;
-              margin-left: auto;
-              max-height: 180px;
-              max-width: 260px;
-              vertical-align: middle;
-              width: 100%;
-            }
+      #live-editor-modal-window #files .row .file h3 {
+        margin: 10px 0 5px;
+      }
 
-        #cboxLoadedContent #files .row .file h3 {
-          margin: 10px 0 5px;
-        }
+      #live-editor-modal-window #files .row .file p {
+        margin: 0;
+      }
 
-        #cboxLoadedContent #files .row .file p {
-          margin: 0;
-        }
+  @media screen and (min-width: 1000px) {
+    #live-editor-modal-window #files .row .file {
+      float: left;
+      width: 32%;
+    }
 
-  #cboxLoadedContent .media-sidebar {}
+      #live-editor-modal-window #files .row .file .thumb .thumbnail {
+        height: 180px;
+        margin: auto;
+        vertical-align: middle;
+        width: 100%;
+        /* IE hacks */
+        #position: absolute;
+        #top: 50%;
+      }
+  }
 
-    #cboxLoadedContent .media-sidebar #collections {}
+  #live-editor-modal-window .media-sidebar {}
 
-      #cboxLoadedContent .media-sidebar #collections ul {}
+    #live-editor-modal-window .media-sidebar #collections {}
 
-        #cboxLoadedContent .media-sidebar #collections ul li {
+      #live-editor-modal-window .media-sidebar #collections ul {}
+
+        #live-editor-modal-window .media-sidebar #collections ul li {
           margin-bottom: 0;
         }
 
-          #cboxLoadedContent .media-sidebar #collections ul li label {
+          #live-editor-modal-window .media-sidebar #collections ul li label {
             display: block;
           }
 
-          #cboxLoadedContent .media-sidebar #collections ul li ul {
-            padding-left: 14px;
+          #live-editor-modal-window .media-sidebar #collections ul li ul {
+            padding-left: 0;
           }
 
-  #cboxLoadedContent #url-form {
+          @media screen and (min-width: 901px) {
+            #live-editor-modal-window .media-sidebar #collections ul li ul {
+              padding-left: 14px;
+            }
+          }
+
+  #live-editor-modal-window #url-form {
     padding: 20px;
   }
 
-  #cboxLoadedContent div.updated,
-  #cboxLoadedContent div.error {
+  #live-editor-modal-window div.updated,
+  #live-editor-modal-window div.error {
     margin: 0 0 20px 0;
   }
 
-  #cboxLoadedContent .copyright {
+  #live-editor-modal-window .copyright {
     color: #999;
     font-size: 11px;
     text-align: right;
   }
 
-    #cboxLoadedContent .copyright a {
+    #live-editor-modal-window .copyright a {
       color: #555;
       text-decoration: none;
     }

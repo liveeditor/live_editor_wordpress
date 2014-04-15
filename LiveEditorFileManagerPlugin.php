@@ -106,18 +106,10 @@ class LiveEditorFileManagerPlugin {
 
     // Our main stylesheet
   ?>
-    <link rel="stylesheet" type="text/css" href="<?php echo plugins_url('stylesheets/colorbox.css', __FILE__) ?>" />
     <link rel="stylesheet" type="text/css" href="<?php echo plugins_url('stylesheets/styles.css', __FILE__) ?>" />
   <?php
 
     // JavaScript
-    wp_enqueue_script(
-      "colorbox",
-      plugins_url('javascripts/jquery.colorbox.js', __FILE__),
-      "jquery",
-      self::VERSION
-    );
-
     wp_enqueue_script(
       "postmessage",
       plugins_url('javascripts/jquery.ba-postmessage.js', __FILE__),
