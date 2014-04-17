@@ -161,6 +161,6 @@ We're honored to be asked about Live Editor's longevity because we know that it 
 = 0.5.6 (December 9, 2013) =
 *  Revert bug introduced by version 0.5.4.
 
-= 0.5.7 (April 17, 2014)
+= 0.5.7 (April 17, 2014) =
 *  WordPress 3.8 and 3.9 compatibility.
 *  Modal window now relies fully on WordPress classes and styles instead of running on a rigged Colorbox.
