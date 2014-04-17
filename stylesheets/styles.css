@@ -35,9 +35,26 @@ span.le-media-buttons-icon:before {
 /* Buttons */
 
 #wp-fullscreen-buttons #wp_fs_live_editor_media span.mce_live_editor_media {
+  color: #ADC44F;
+}
+
+  #wp-fullscreen-buttons #wp_fs_live_editor_media span.mce_live_editor_media:before {
+    content: '\f104';
+  }
+
+/* Old sprite button for WordPress 3.5-3.7 */
+.branch-3-5 #wp-fullscreen-buttons #wp_fs_live_editor_media span.mce_live_editor_media,
+.branch-3-6 #wp-fullscreen-buttons #wp_fs_live_editor_media span.mce_live_editor_media,
+.branch-3-7 #wp-fullscreen-buttons #wp_fs_live_editor_media span.mce_live_editor_media {
   background-image: url(../images/sprites/icons.png);
   background-position: 2px 3px;
 }
+
+  .branch-3-5 #wp-fullscreen-buttons #wp_fs_live_editor_media span.mce_live_editor_media:before,
+  .branch-3-6 #wp-fullscreen-buttons #wp_fs_live_editor_media span.mce_live_editor_media:before,
+  .branch-3-7 #wp-fullscreen-buttons #wp_fs_live_editor_media span.mce_live_editor_media:before {
+    content: '';
+  }
 
 .insert-live-editor-media.button {
   padding-left: 0.4em;
@@ -102,19 +119,15 @@ span.le-media-buttons-icon:before {
       }
     }
 
-    .tablenav-pages.live-editor-tablenav-pages {
-      /*text-align: left;*/
+    .paging-input.live-editor-paging-input {
+      display: none;
     }
 
+    @media screen and (min-width: 783px) {
       .paging-input.live-editor-paging-input {
-        display: none;
+        display: inline;
       }
-
-      @media screen and (min-width: 783px) {
-        .paging-input.live-editor-paging-input {
-          display: inline;
-        }
-      }
+    }
 
   #live-editor-modal-window #files {
     overflow-y: auto;

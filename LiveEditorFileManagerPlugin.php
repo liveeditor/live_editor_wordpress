@@ -345,7 +345,7 @@ class LiveEditorFileManagerPlugin {
         case '3.6':
         case '3.6.1':
         case '3.7':
-        case '3.6.1':
+        case '3.7.1':
         ?>
           <a
             id="live-editor-file-manager-add-media-link"
