@@ -34,11 +34,14 @@ span.le-media-buttons-icon:before {
 
 /* Buttons */
 
-#wp-fullscreen-buttons #wp_fs_live_editor_media span.mce_live_editor_media {
+#wp-fullscreen-buttons #wp_fs_live_editor_media span.mce_live_editor_media,
+#wp-fullscreen-buttons #wp_fs_live_editor_media i.mce-i-live_editor_media {
   color: #ADC44F;
+  font: 400 20px/1 dashicons;
 }
 
-  #wp-fullscreen-buttons #wp_fs_live_editor_media span.mce_live_editor_media:before {
+  #wp-fullscreen-buttons #wp_fs_live_editor_media span.mce_live_editor_media:before,
+  #wp-fullscreen-buttons #wp_fs_live_editor_media i.mce-i-live_editor_media:before {
     content: '\f104';
   }
 
