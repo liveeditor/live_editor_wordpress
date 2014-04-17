@@ -54,6 +54,16 @@ span.le-media-buttons-icon:before {
 
 #live-editor-modal-window {}
 
+  .media-frame-content.live-editor-media-frame-content {
+    top: 47px !important;
+  }
+
+  @media screen and (min-width: 641px) {
+    .media-frame-content.live-editor-media-frame-content {
+      top: 56px !important;
+    }
+  }
+
   #live-editor-modal-window .media-frame .media-frame-content .media-toolbar input {
     padding: 3px;
   }
@@ -68,6 +78,43 @@ span.le-media-buttons-icon:before {
       height: 100%;
     }
   }
+
+  .media-toolbar.live-editor-media-toolbar {
+    padding: 0 5px;
+    position: absolute;
+      top: 0;
+      left: 0;
+      right: 180px;
+    width: auto;
+  }
+
+    @media screen and (min-width: 641px) {
+      .media-toolbar.live-editor-media-toolbar {
+        padding-left: 16px;
+        padding-right: 16px;
+        width: auto;
+      }
+    }
+
+    @media screen and (min-width: 901px) {
+      .media-toolbar.live-editor-media-toolbar {
+        right: 300px;
+      }
+    }
+
+    .tablenav-pages.live-editor-tablenav-pages {
+      /*text-align: left;*/
+    }
+
+      .paging-input.live-editor-paging-input {
+        display: none;
+      }
+
+      @media screen and (min-width: 783px) {
+        .paging-input.live-editor-paging-input {
+          display: inline;
+        }
+      }
 
   #live-editor-modal-window #files {
     overflow-y: auto;

@@ -18,12 +18,12 @@
     <input type="hidden" name="wp_source" value="<?php $params['wp_source'] ?>" />
     <input type="hidden" id="total-pages" value="<?php echo $total_pages ?>" />
 
-    <div class="media-frame-content">
+    <div class="media-frame-content live-editor-media-frame-content">
       <div class="attachments-browser live-editor-attachments-browser">
         <?php if (count($files)) : ?>
-          <div class="media-toolbar">
+          <div class="media-toolbar live-editor-media-toolbar">
             <div class="tablenav top">
-              <div class="tablenav-pages">
+              <div class="tablenav-pages live-editor-tablenav-pages">
                 <span class="displaying-num">
                   <?php echo $files_count ?> items
                 </span>
@@ -32,7 +32,7 @@
                     &laquo;</a>
                   <a href="#" class="prev-page <?php echo prev_page_link_class($current_page) ?> modal-ignore" title="Go to the previous page">
                     &lsaquo;</a>
-                  <span class="paging-input">
+                  <span class="paging-input live-editor-paging-input">
                     <input id="current-page" class="current-page" title="Current page" type="text" name="page" value="<?php echo $current_page ?>" size="1" />
                     of
                     <span class="total-pages">
